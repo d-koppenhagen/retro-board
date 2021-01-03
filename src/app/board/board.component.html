@@ -1,0 +1,150 @@
+<mat-toolbar>
+  <mat-toolbar-row fxLayoutAlign="space-between center">
+    <div class="logo-container" fxLayout="row" fxLayoutAlign="start center">
+      <mat-icon class="logo">gesture</mat-icon>
+      <div>Retro Board</div>
+    </div>
+    <div fxLayout="row">
+      <a
+        mat-icon-button
+        aria-label="Jump to the GitHub project"
+        href="https://github.com/d-koppenhagen/retro-board"
+      >
+        <mat-icon
+          svgIcon="github"
+          aria-hidden="false"
+          aria-label="GitHub icon"
+        ></mat-icon>
+      </a>
+      <button
+        mat-raised-button
+        color="accent"
+        [matMenuTriggerFor]="menu"
+        *ngIf="name"
+      >
+        {{ name }}
+      </button>
+      <mat-menu #menu="matMenu" overlapTrigger="false">
+        <button mat-menu-item (click)="logout()">Logout</button>
+      </mat-menu>
+    </div>
+  </mat-toolbar-row>
+  <mat-toolbar-row class="hAuto toolbar">
+    <button mat-icon-button matTooltip="Sticky Note" (click)="addNote()">
+      <mat-icon class="toolbar-icon">sticky_note_2</mat-icon>
+    </button>
+    <div class="toolbar-separator"></div>
+    <button
+      mat-icon-button
+      matTooltip="Draw"
+      [color]="shape === 'free' ? 'accent' : ''"
+      (click)="shape = 'free'"
+    >
+      <mat-icon class="toolbar-icon">create</mat-icon>
+    </button>
+    <button
+      mat-icon-button
+      matTooltip="Line"
+      [color]="shape === 'line' ? 'accent' : ''"
+      (click)="shape = 'line'"
+    >
+      <mat-icon class="toolbar-icon">show_chart</mat-icon>
+    </button>
+    <button
+      mat-icon-button
+      matTooltip="Circle"
+      [color]="shape === 'circle' ? 'accent' : ''"
+      (click)="shape = 'circle'"
+    >
+      <mat-icon class="toolbar-icon">radio_button_unchecked</mat-icon>
+    </button>
+    <button
+      mat-icon-button
+      matTooltip="Rectangle"
+      [color]="shape === 'rectangle' ? 'accent' : ''"
+      (click)="shape = 'rectangle'"
+    >
+      <mat-icon class="toolbar-icon">check_box_outline_blank</mat-icon>
+    </button>
+    <div class="toolbar-separator"></div>
+    <button
+      mat-icon-button
+      matTooltip="Stroke Color"
+      [style.color]="strokeColor === 'transparent' ? '#00000030' : strokeColor"
+      [class]="{ inactive: strokeColor === 'transparent' }"
+      (click)="nextStrokeColor()"
+    >
+      <mat-icon class="toolbar-icon">border_color</mat-icon>
+    </button>
+    <button
+      mat-icon-button
+      matTooltip="Fill Color"
+      [style.color]="fillColor === 'transparent' ? '#00000030' : fillColor"
+      [class]="{ inactive: fillColor === 'transparent' }"
+      (click)="nextFillColor()"
+    >
+      <mat-icon class="toolbar-icon">format_color_fill</mat-icon>
+    </button>
+    <div class="toolbar-separator"></div>
+    <button
+      mat-icon-button
+      matTooltip="Erase"
+      [color]="shape === 'erase' ? 'accent' : ''"
+      (click)="shape = 'erase'"
+    >
+      <mat-icon class="toolbar-icon">video_label</mat-icon>
+    </button>
+    <button mat-icon-button matTooltip="Clear Canvas" (click)="clearAll()">
+      <mat-icon class="toolbar-icon">layers_clear</mat-icon>
+    </button>
+    <button
+      mat-icon-button
+      matTooltip="Select background for Canvas"
+      (click)="openBottomSheet()"
+    >
+      <mat-icon class="toolbar-icon">image</mat-icon>
+    </button>
+    <div class="toolbar-separator"></div>
+    <mat-icon class="toolbar-icon" matTooltip="Stroke Width"
+      >border_outer</mat-icon
+    >
+    <mat-slider
+      [(ngModel)]="strokeWidth"
+      [min]="1"
+      [max]="500"
+      [step]="1"
+    ></mat-slider>
+    <div class="ml15 mr5">{{ strokeWidth }}</div>
+    <div class="toolbar-separator"></div>
+    <div class="ml15">Online:</div>
+    <div class="ml15" fxLayout="row">
+      <div
+        class="users mr5"
+        fxLayoutAlign="center center"
+        [style.background]="availableColors[random]"
+        [matTooltip]="users[key]"
+        *ngFor="let key of objectKeys(users)"
+      >
+        <div>{{ users[key]?.substr(0, 1) }}</div>
+      </div>
+    </div>
+  </mat-toolbar-row>
+</mat-toolbar>
+<mat-card>
+  <app-canvas
+    [width]="400"
+    [height]="400"
+    [shape]="shape"
+    [strokeColor]="strokeColor"
+    [fillColor]="fillColor"
+    [strokeWidth]="strokeWidth"
+    #appCanvas
+  ></app-canvas>
+  <app-sticky-note
+    class="sticky-note"
+    *ngFor="let note of stickyNotes"
+    [note]="note"
+    (update)="updateNote($event)"
+    (remove)="removeNote($event)"
+  ></app-sticky-note>
+</mat-card>

@@ -1,17 +1,20 @@
-# Canvas App
-[![FOSSA Status](https://app.fossa.io/api/projects/git%2Bgithub.com%2Fjeffersonswartz%2Fcanvas-app.svg?type=shield)](https://app.fossa.io/projects/git%2Bgithub.com%2Fjeffersonswartz%2Fcanvas-app?ref=badge_shield)
+# Retro Board
 
+<a href="https://www.buymeacoffee.com/dkoppenhagen" target="_blank"><img src="https://www.buymeacoffee.com/assets/img/custom_images/orange_img.png" alt="Buy Me A Coffee" style="height: 41px !important;width: 174px !important;box-shadow: 0px 3px 2px 0px rgba(190, 190, 190, 0.5) !important;-webkit-box-shadow: 0px 3px 2px 0px rgba(190, 190, 190, 0.5) !important;" ></a>
 
-Canvas App is a collabrative drawing tool that enables the users to draw collabratively between their browsers
+[![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](http://makeapullrequest.com)
+[![Open Source Love](https://badges.frapsoft.com/os/v1/open-source.svg?v=102)](https://github.com/ellerbrock/open-source-badge/)
+[![Live](https://img.shields.io/badge/Live-firebase-blueviolet.svg)](https://d-koppenhagen.github.io/angular-tag-cloud-module/)
 
+Retro Board is a collaborative drawing / retrospective tool that enables the users to draw collaboratively between their browsers.
 
+![A screenshot from the retro board app](./docs/screenshot.png)
 
-
-### Installation
-
-Canvas App requires [Node.js](https://nodejs.org/) v8.9+ to run.
+The original code base was inspired and forked from [@jeffersonswartz canvas-app](https://github.com/jeffersonswartz/canvas-app)
+### Development
 
 Install Angular CLI globally.
+
 ```sh
 $ npm install -g @angular/cli
 ```
@@ -22,19 +25,17 @@ Install the dependencies and devDependencies.
 $ npm install
 ```
 
-Build the angular code
+Adjust the Firebase configuration and connect it to your instance by copying the template and change the content:
 
 ```sh
-$ ng build
+cp src/environments/environment.example.ts src/environments/environment.ts
+# open src/environments/environment.ts and adjust the content
 ```
 
-Run the Node Server
+Start the app locally
+
 ```sh
-$ node server.js
-Goto URL localhost:3000
+$ npm start
 ```
- That's it.
 
-
-## License
-[![FOSSA Status](https://app.fossa.io/api/projects/git%2Bgithub.com%2Fjeffersonswartz%2Fcanvas-app.svg?type=large)](https://app.fossa.io/projects/git%2Bgithub.com%2Fjeffersonswartz%2Fcanvas-app?ref=badge_large)
+That's it. 🎉

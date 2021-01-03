@@ -1,0 +1,84 @@
+<div
+  class="sticky-container"
+  cdkDrag
+  (cdkDragEnded)="dragEnded($event)"
+  (click)="editOnDoubleClick()"
+  *ngIf="!hideNote"
+  [style.left]="note.left + 'px'"
+  [style.top]="note.top + 'px'"
+>
+  <svg width="0" height="0">
+    <defs>
+      <filter id="filter">
+        <feGaussianBlur stdDeviation="10"></feGaussianBlur>
+      </filter>
+      <clipPath id="stickyClip" clipPathUnits="objectBoundingBox">
+        <path
+          d="M 0 0 Q 0 0.83, 0.04 0.96 0.04 0.96, 1 0.96 Q 0.96 0.83, 0.96 0 0.96 0, 0 0"
+          stroke-linejoin="round"
+          stroke-linecap="square"
+        />
+      </clipPath>
+    </defs>
+  </svg>
+  <div
+    class="sticky-content-container"
+    [style.backgroundColor]="
+      noteColor === 'transparent' ? '#fefefe' : noteColor
+    "
+  >
+    <div class="sticky-content">
+      <ng-container *ngIf="note.editMode; else displayStored" novalidate>
+        <form
+          class="sticky-note-form"
+          [formGroup]="formGroup"
+          (ngSubmit)="onSubmit(formGroup.value)"
+        >
+          <mat-form-field class="full-width">
+            <mat-label>Title</mat-label>
+            <input
+              matInput
+              placeholder="leave a title"
+              formControlName="title"
+            />
+          </mat-form-field>
+
+          <mat-form-field class="full-width">
+            <mat-label>Description</mat-label>
+            <textarea
+              matInput
+              placeholder="leave a description"
+              formControlName="description"
+            ></textarea>
+          </mat-form-field>
+
+          <div class="cta-buttons">
+            <button
+              mat-raised-button
+              color="primary"
+              class="button"
+              [disabled]="!formGroup.valid"
+              type="submit"
+            >
+              Save
+            </button>
+
+            <button
+              mat-raised-button
+              color="secondary"
+              class="button"
+              type="button"
+              (click)="cancelEdit()"
+            >
+              Cancel
+            </button>
+          </div>
+        </form>
+      </ng-container>
+      <ng-template #displayStored>
+        <h3>{{ note.title }}</h3>
+        <p>{{ note.description }}</p>
+      </ng-template>
+    </div>
+  </div>
+</div>

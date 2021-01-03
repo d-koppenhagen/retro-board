@@ -1,5 +1,14 @@
+.canvas-container {
+  width: 100%;
+  height: calc(100vh - 154px);
+}
+
 canvas {
   display: block;
   width: 100%;
-  height: calc(100vh - 154px);
+  height: 100%;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  border-radius: 4px;
 }
