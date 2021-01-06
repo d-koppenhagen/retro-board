@@ -11,6 +11,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
+      # create environment file based on template
+      - run: cp src/environments/environment.example.ts src/environments/environment.ts
       # replace variables
       - name: Replace FIREBASE_API_KEY
         uses: jacobtomlinson/gha-find-replace@master
