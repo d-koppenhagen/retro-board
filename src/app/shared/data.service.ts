@@ -58,8 +58,8 @@ export class DataService {
     this.db.object(`${boardId}/users/${user.uuid}`).remove();
   }
 
-  clearAll(boardId: string) {
-    this.db.object(`${boardId}`).remove();
+  clearAll(boardId: string): Promise<void> {
+    return this.db.object(`${boardId}`).remove();
   }
 
   getBackgroundImage(boardId: string | null): Observable<string> {

@@ -326,13 +326,6 @@ export class CanvasComponent implements OnInit, AfterViewInit {
     this.dataService.draw(this.boardId, shapeObj);
   }
 
-  // Method to clear the canvas
-  clearCanvas() {
-    const width = this.canvas.clientWidth;
-    const height = this.canvas.clientHeight;
-    this.context.clearRect(0, 0, width, height);
-  }
-
   // Initialization Method
   init() {
     this.canvas = document.getElementById('canvas') as HTMLCanvasElement;

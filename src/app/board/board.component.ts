@@ -10,7 +10,7 @@ import { CanvasComponent } from '../canvas/canvas.component';
 import { StickyNote, StickyNoteDbo } from '../shared/sticky-note';
 import { DataService } from '../shared/data.service';
 import { BackgroundSelectComponent } from '../background-select/background-select.component';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { OwnUser } from '../shared/active-users';
 
 @Component({
@@ -52,6 +52,7 @@ export class BoardComponent implements OnInit {
     private dataService: DataService,
     private bottomSheet: MatBottomSheet,
     private route: ActivatedRoute,
+    private router: Router,
     iconRegistry: MatIconRegistry,
     sanitizer: DomSanitizer
   ) {
@@ -121,12 +122,18 @@ export class BoardComponent implements OnInit {
   }
 
   clearAll() {
-    this.dataService.clearAll(this.boardId);
+    this.dataService.clearAll(this.boardId).then(() => {
+      location.reload();
+    });
   }
 
   // Init Method for the component
   ngOnInit() {
     this.boardId = this.route.snapshot.paramMap.get('boardId');
+    this.initBoard();
+  }
+
+  initBoard(): void {
     const user = this.dataService.getOwnUser();
     if (!user) {
       this.openDialog();
