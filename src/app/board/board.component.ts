@@ -12,6 +12,7 @@ import { DataService } from '../shared/data.service';
 import { BackgroundSelectComponent } from '../background-select/background-select.component';
 import { ActivatedRoute, Router } from '@angular/router';
 import { OwnUser } from '../shared/active-users';
+import { ClearBoardDialogComponent } from '../clear-board-dialog/clear-board-dialog.component';
 
 @Component({
   selector: 'app-board',
@@ -122,8 +123,16 @@ export class BoardComponent implements OnInit {
   }
 
   clearAll() {
-    this.dataService.clearAll(this.boardId).then(() => {
-      location.reload();
+    const dialogRef = this.dialog.open(ClearBoardDialogComponent, {
+      width: '350px',
+    });
+
+    dialogRef.afterClosed().subscribe((doClear: boolean) => {
+      if (doClear) {
+        this.dataService.clearAll(this.boardId).then(() => {
+          location.reload();
+        });
+      }
     });
   }
 

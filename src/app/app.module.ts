@@ -29,6 +29,7 @@ import { MatBottomSheetModule } from '@angular/material/bottom-sheet';
 import { AppRoutingModule } from './app-routing.module';
 import { BoardComponent } from './board/board.component';
 import { HttpClientModule } from '@angular/common/http';
+import { ClearBoardDialogComponent } from './clear-board-dialog/clear-board-dialog.component';
 
 @NgModule({
   declarations: [
@@ -38,6 +39,7 @@ import { HttpClientModule } from '@angular/common/http';
     StickyNoteComponent,
     BackgroundSelectComponent,
     BoardComponent,
+    ClearBoardDialogComponent,
   ],
   imports: [
     BrowserModule,
