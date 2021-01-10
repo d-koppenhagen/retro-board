@@ -10,7 +10,7 @@ import {
 } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { DataService } from '../shared/data.service';
-import { Shape, ShapeDbo } from '../shared/shape';
+import { DragPosition, Shape, ShapeDbo, ShapeType } from '../shared/shape';
 import { Ruler } from '../shared/ruler';
 
 @Component({
@@ -21,7 +21,7 @@ import { Ruler } from '../shared/ruler';
 export class CanvasComponent implements OnInit, AfterViewInit {
   @Input() width: string;
   @Input() height: string;
-  @Input() shape: string;
+  @Input() shape: ShapeType;
   @Input() fill: string;
   @Input() strokeColor: string;
   @Input() fillColor: string;
@@ -30,19 +30,16 @@ export class CanvasComponent implements OnInit, AfterViewInit {
   @Input() rulers: Ruler[];
   @Output() updateRulers = new EventEmitter();
 
-  context: any;
+  context: CanvasRenderingContext2D;
   dragging = false;
-  dragStartLocation;
-  snapshot: string;
+  dragStartLocation: DragPosition;
+  snapshot: ImageData;
   lastX: number;
   lastY: number;
   boardId: string;
 
   canvas: HTMLCanvasElement;
-  undoArray = [];
-  redoArray = [];
-
-  private internalData: any;
+  private internalData: Partial<Shape>;
 
   constructor(
     private dataService: DataService,
@@ -51,8 +48,8 @@ export class CanvasComponent implements OnInit, AfterViewInit {
 
   // Listener for the Screen resize
   @HostListener('window:resize', ['$event'])
-  onResize(event) {
-    this.resizeCanvasToDisplaySize(this.canvas);
+  onResize(event: UIEvent) {
+    this.resizeCanvasToDisplaySize();
   }
 
   ngOnInit() {
@@ -67,7 +64,7 @@ export class CanvasComponent implements OnInit, AfterViewInit {
       .subscribe((shape: ShapeDbo) => {
         if (shape) {
           for (const [key, value] of Object.entries(shape)) {
-            if (!this.internalData.dragging && shape.dragging) {
+            if (this.internalData.dragging && shape.dragging) {
               this.lastX = value.dragStartLocation.x;
               this.lastY = value.dragStartLocation.y;
             }
@@ -95,8 +92,8 @@ export class CanvasComponent implements OnInit, AfterViewInit {
     };
   }
 
-  // Method to get the coordiantes of the canvas
-  getCanvasCoordinates(event) {
+  // Method to get the coordinates of the canvas
+  getCanvasCoordinates(event: MouseEvent): DragPosition {
     const x = event.clientX - this.canvas.getBoundingClientRect().left;
     const y = event.clientY - this.canvas.getBoundingClientRect().top;
 
@@ -120,13 +117,13 @@ export class CanvasComponent implements OnInit, AfterViewInit {
 
   // Method to draw the particular shape
   drawShape(
-    position,
-    shape,
-    dragStartLocation,
-    strokeStyle,
-    lineWidth,
-    fillStyle,
-    dragging
+    position: DragPosition,
+    shape: ShapeType,
+    dragStartLocation: DragPosition,
+    strokeStyle: string,
+    lineWidth: number,
+    fillStyle: string,
+    dragging: boolean
   ) {
     this.internalData = {
       shape,
@@ -167,7 +164,7 @@ export class CanvasComponent implements OnInit, AfterViewInit {
   }
 
   // Method to Draw Line
-  drawLine(position) {
+  drawLine(position: DragPosition) {
     this.context.beginPath();
     this.context.moveTo(
       this.internalData.dragStartLocation.x,
@@ -178,7 +175,7 @@ export class CanvasComponent implements OnInit, AfterViewInit {
   }
 
   // Method to Draw Circle
-  drawCircle(position) {
+  drawCircle(position: DragPosition) {
     const radius = Math.sqrt(
       Math.pow(this.internalData.dragStartLocation.x - position.x, 2) +
         Math.pow(this.internalData.dragStartLocation.y - position.y, 2)
@@ -197,7 +194,7 @@ export class CanvasComponent implements OnInit, AfterViewInit {
   }
 
   // Method to Draw Free Text
-  drawFree(position) {
+  drawFree(position: DragPosition) {
     if (this.internalData.dragging === true) {
       this.context.beginPath();
       this.context.lineJoin = 'round';
@@ -211,7 +208,7 @@ export class CanvasComponent implements OnInit, AfterViewInit {
   }
 
   // Method to Draw Rectangle
-  drawRectangle(position) {
+  drawRectangle(position: DragPosition) {
     const lengthX = Math.abs(
       position.x - this.internalData.dragStartLocation.x
     );
@@ -243,7 +240,7 @@ export class CanvasComponent implements OnInit, AfterViewInit {
   }
 
   // Mouse Drag event start function
-  dragStart(event) {
+  dragStart(event: MouseEvent) {
     this.internalData.dragging = true;
     this.dragging = true;
     if (this.shape !== 'erase') {
@@ -264,8 +261,8 @@ export class CanvasComponent implements OnInit, AfterViewInit {
   }
 
   // Mouse Drag event function
-  drag(event) {
-    let position;
+  drag(event: MouseEvent) {
+    let position: DragPosition;
     if (this.internalData.dragging === true) {
       position = this.getCanvasCoordinates(event);
       if (
@@ -299,7 +296,7 @@ export class CanvasComponent implements OnInit, AfterViewInit {
   }
 
   // Mouse Drag event stop function
-  dragStop(event) {
+  dragStop(event: MouseEvent) {
     this.dragging = false;
     this.internalData.dragging = false;
     if (
@@ -344,24 +341,24 @@ export class CanvasComponent implements OnInit, AfterViewInit {
     this.canvas.addEventListener('mousemove', this.drag.bind(this), false);
     this.canvas.addEventListener('mouseup', this.dragStop.bind(this), false);
 
-    this.resizeCanvasToDisplaySize(this.canvas);
+    this.resizeCanvasToDisplaySize();
   }
 
   // Resize method for the canvas
-  resizeCanvasToDisplaySize(canvas) {
+  resizeCanvasToDisplaySize(): boolean {
     // look up the size the canvas is being displayed
-    const width = canvas.clientWidth;
-    const height = canvas.clientHeight;
+    const width = this.canvas.clientWidth;
+    const height = this.canvas.clientHeight;
 
     // If it's resolution does not match change it
-    if (canvas.width !== width || canvas.height !== height) {
+    if (this.canvas.width !== width || this.canvas.height !== height) {
       const tempCnvs = document.createElement('canvas');
       const tempCntx = tempCnvs.getContext('2d');
-      tempCnvs.width = canvas.width;
-      tempCnvs.height = canvas.height;
-      tempCntx.drawImage(canvas, 0, 0);
-      canvas.width = width;
-      canvas.height = height;
+      tempCnvs.width = this.canvas.width;
+      tempCnvs.height = this.canvas.height;
+      tempCntx.drawImage(this.canvas, 0, 0);
+      this.canvas.width = width;
+      this.canvas.height = height;
       this.context.drawImage(tempCnvs, 0, 0);
       if (this.shape !== 'erase') {
         this.context.strokeStyle = this.strokeColor;

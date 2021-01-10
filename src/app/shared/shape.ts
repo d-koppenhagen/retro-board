@@ -4,16 +4,26 @@ export interface Shape {
     y: number;
   };
   uuid: string;
-  shape: string;
-  dragStartLocation: {
-    x: number;
-    y: number;
-  };
+  shape: ShapeType;
+  dragStartLocation: DragPosition;
   strokeStyle: string;
   lineWidth: number;
   fillStyle: string;
   dragging?: boolean;
 }
+
+export interface DragPosition {
+  x: number;
+  y: number;
+}
+
+export type ShapeType =
+  | 'line'
+  | 'circle'
+  | 'free'
+  | 'rectangle'
+  | 'erase'
+  | 'sticky_note';
 
 export interface ShapeDbo {
   [uuid: string]: Omit<Shape, 'uuid'>;
