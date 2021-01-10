@@ -97,6 +97,21 @@
     <button mat-icon-button matTooltip="Clear Canvas" (click)="clearAll()">
       <mat-icon class="toolbar-icon">layers_clear</mat-icon>
     </button>
+    <div class="toolbar-separator"></div>
+    <button
+      mat-icon-button
+      matTooltip="Add an horizontal ruler"
+      (click)="addRuler('horizontal')"
+    >
+      <mat-icon class="toolbar-icon">border_horizontal</mat-icon>
+    </button>
+    <button
+      mat-icon-button
+      matTooltip="Add a vertical ruler"
+      (click)="addRuler('vertical')"
+    >
+      <mat-icon class="toolbar-icon">border_vertical</mat-icon>
+    </button>
     <button
       mat-icon-button
       matTooltip="Select background for Canvas"
@@ -138,6 +153,8 @@
     [strokeColor]="strokeColor"
     [fillColor]="fillColor"
     [strokeWidth]="strokeWidth"
+    [rulers]="rulers"
+    (updateRulers)="updateRulers($event)"
     #appCanvas
   ></app-canvas>
   <app-sticky-note

@@ -1,0 +1,29 @@
+.ruler {
+  position: absolute;
+  display: block;
+  > button {
+    width: 10px;
+    height: 10px;
+  }
+}
+
+.vertical-ruler {
+  cursor: col-resize;
+  border-right: 2px solid rgb(149, 149, 149);
+  width: 4px;
+  height: 100%;
+  > button {
+    cursor: col-resize;
+    top: -5px;
+  }
+}
+.horizontal-ruler {
+  cursor: row-resize;
+  border-bottom: 2px solid rgb(149, 149, 149);
+  height: 4px;
+  width: 100%;
+  > button {
+    cursor: row-resize;
+    left: -5px;
+  }
+}

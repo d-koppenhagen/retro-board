@@ -3,6 +3,7 @@ import { AngularFireDatabase } from '@angular/fire/database';
 import { Observable } from 'rxjs';
 import { v4 as uuidv4 } from 'uuid';
 import { ActiveUsers, OwnUser } from './active-users';
+import { Ruler } from './ruler';
 import { Shape, ShapeDbo } from './shape';
 import { StickyNote, StickyNoteDbo } from './sticky-note';
 
@@ -62,11 +63,19 @@ export class DataService {
     return this.db.object(`${boardId}`).remove();
   }
 
-  getBackgroundImage(boardId: string | null): Observable<string> {
+  getBackgroundImage(boardId: string): Observable<string | null> {
     return this.db.object<string>(`${boardId}/backgroundImage`).valueChanges();
   }
 
   setBackgroundImage(boardId: string, backgroundImageUrl: string): void {
     this.db.object(`${boardId}/backgroundImage`).set(backgroundImageUrl);
+  }
+
+  getRulers(boardId: string | null): Observable<Ruler[] | null> {
+    return this.db.object<Ruler[] | null>(`${boardId}/rulers`).valueChanges();
+  }
+
+  setRulers(boardId: string, rulers: Ruler[]): void {
+    this.db.object(`${boardId}/rulers`).set(rulers);
   }
 }

@@ -1,6 +1,7 @@
 .canvas-container {
   width: 100%;
   height: calc(100vh - 154px);
+  position: relative;
 }
 
 canvas {

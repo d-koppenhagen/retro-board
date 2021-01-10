@@ -1,4 +1,10 @@
 <div class="canvas-container">
+  <app-ruler
+    *ngFor="let ruler of rulers"
+    [ruler]="ruler"
+    (updatePosition)="updateRuler($event, ruler)"
+    (remove)="removeRuler(ruler)"
+  ></app-ruler>
   <canvas
     #canvas
     id="canvas"

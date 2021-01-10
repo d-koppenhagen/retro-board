@@ -5,10 +5,13 @@ import {
   HostListener,
   AfterViewInit,
   OnInit,
+  EventEmitter,
+  Output,
 } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { DataService } from '../shared/data.service';
 import { Shape, ShapeDbo } from '../shared/shape';
+import { Ruler } from '../shared/ruler';
 
 @Component({
   selector: 'app-canvas',
@@ -24,6 +27,8 @@ export class CanvasComponent implements OnInit, AfterViewInit {
   @Input() fillColor: string;
   @Input() strokeWidth: number;
   @Input() backgroundImage: string;
+  @Input() rulers: Ruler[];
+  @Output() updateRulers = new EventEmitter();
 
   context: any;
   dragging = false;
@@ -367,5 +372,21 @@ export class CanvasComponent implements OnInit, AfterViewInit {
       return true;
     }
     return false;
+  }
+
+  updateRuler(newRuler: Ruler, oldRuler: Ruler) {
+    const newRulers = [...this.rulers];
+    const oldRulerPos = newRulers.findIndex(
+      (ruler) => ruler.id === oldRuler.id
+    );
+    newRulers[oldRulerPos] = newRuler;
+    this.updateRulers.emit(newRulers);
+  }
+
+  removeRuler(rulerToRemove: Ruler) {
+    const newRulers = this.rulers.filter(
+      (ruler) => ruler.id !== rulerToRemove.id
+    );
+    this.updateRulers.emit(newRulers);
   }
 }

@@ -13,6 +13,7 @@ import { BackgroundSelectComponent } from '../background-select/background-selec
 import { ActivatedRoute, Router } from '@angular/router';
 import { OwnUser } from '../shared/active-users';
 import { ClearBoardDialogComponent } from '../clear-board-dialog/clear-board-dialog.component';
+import { Ruler } from '../shared/ruler';
 
 @Component({
   selector: 'app-board',
@@ -32,6 +33,7 @@ export class BoardComponent implements OnInit {
   name = '';
   users = {};
   stickyNotes: StickyNote[] = [];
+  rulers: Ruler[] = [];
   availableColors = [
     'transparent',
     '#ff5733',
@@ -184,6 +186,12 @@ export class BoardComponent implements OnInit {
       .subscribe((imgSrc: string | null) => {
         this.appCanvas.backgroundImage = imgSrc || '';
       });
+
+    this.dataService
+      .getRulers(this.boardId)
+      .subscribe((rulers: Ruler[] | null) => {
+        this.rulers = rulers && rulers.length ? rulers : [];
+      });
   }
 
   nextFillColor() {
@@ -210,5 +218,17 @@ export class BoardComponent implements OnInit {
       this.appCanvas.backgroundImage = url;
       this.dataService.setBackgroundImage(this.boardId, url);
     });
+  }
+
+  addRuler(direction: 'horizontal' | 'vertical') {
+    this.rulers.push({
+      direction,
+      positionOnAxis: 50,
+      id: uuidv4(),
+    });
+  }
+
+  updateRulers(rulers: Ruler[]) {
+    this.dataService.setRulers(this.boardId, rulers);
   }
 }

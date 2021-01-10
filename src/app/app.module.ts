@@ -30,6 +30,7 @@ import { AppRoutingModule } from './app-routing.module';
 import { BoardComponent } from './board/board.component';
 import { HttpClientModule } from '@angular/common/http';
 import { ClearBoardDialogComponent } from './clear-board-dialog/clear-board-dialog.component';
+import { RulerComponent } from './ruler/ruler.component';
 
 @NgModule({
   declarations: [
@@ -40,6 +41,7 @@ import { ClearBoardDialogComponent } from './clear-board-dialog/clear-board-dial
     BackgroundSelectComponent,
     BoardComponent,
     ClearBoardDialogComponent,
+    RulerComponent,
   ],
   imports: [
     BrowserModule,

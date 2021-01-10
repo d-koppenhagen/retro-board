@@ -1,0 +1,20 @@
+<span
+  cdkDrag
+  cdkDragBoundary=".canvas-container"
+  [cdkDragLockAxis]="isHorizontal ? 'y' : 'x'"
+  (cdkDragEnded)="dragRulerEnded($event)"
+  [ngClass]="isHorizontal ? 'ruler horizontal-ruler' : 'ruler vertical-ruler'"
+  [style.top]="isHorizontal ? ruler.positionOnAxis + 'px' : '0px'"
+  [style.left]="
+    ruler.direction === 'vertical' ? ruler.positionOnAxis + 'px' : '0px'
+  "
+  ><button
+    mat-mini-fab
+    color="accent"
+    aria-label="Add ruler"
+    (click)="deleteOnDoubleClick()"
+    matTooltip="Double click to remove the ruler"
+    [matTooltipPosition]="isHorizontal ? 'right' : 'left'"
+    [matTooltipShowDelay]="1000"
+  ></button
+></span>
