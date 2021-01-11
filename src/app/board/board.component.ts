@@ -15,6 +15,7 @@ import { OwnUser } from '../shared/active-users';
 import { ClearBoardDialogComponent } from '../clear-board-dialog/clear-board-dialog.component';
 import { Ruler } from '../shared/ruler';
 import html2canvas from 'html2canvas';
+import { BoardData } from '../shared/board-data';
 
 @Component({
   selector: 'app-board',
@@ -256,5 +257,19 @@ export class BoardComponent implements OnInit {
       a.download = `board-${this.boardId}.json`;
       a.click();
     });
+  }
+
+  importAsJSON(event: any) {
+    const selectedFile = event.target.files[0];
+    const fileReader = new FileReader();
+    fileReader.readAsText(selectedFile, 'UTF-8');
+    fileReader.onload = () => {
+      const boardData = JSON.parse(fileReader.result as string) as BoardData;
+      this.dataService.setBoardData(this.boardId, boardData);
+    };
+    fileReader.onerror = (error) => {
+      // todo: open error dialog
+      console.log(error);
+    };
   }
 }

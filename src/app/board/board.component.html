@@ -141,6 +141,17 @@
     <mat-menu #exportMenu="matMenu">
       <button mat-menu-item (click)="exportAsImage()">Export as Image</button>
       <button mat-menu-item (click)="exportAsJSON()">Export as JSON</button>
+      <input
+        #jsonInput
+        hidden="true"
+        type="file"
+        onclick="this.value=null"
+        (change)="importAsJSON($event)"
+        accept=".json"
+      />
+      <button mat-menu-item (click)="jsonInput.click()">
+        Import from JSON File
+      </button>
     </mat-menu>
     <div class="toolbar-separator"></div>
     <div class="ml15">Online:</div>

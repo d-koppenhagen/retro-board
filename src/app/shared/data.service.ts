@@ -4,6 +4,7 @@ import { Observable } from 'rxjs';
 import { take } from 'rxjs/operators';
 import { v4 as uuidv4 } from 'uuid';
 import { ActiveUsers, OwnUser } from './active-users';
+import { BoardData } from './board-data';
 import { Ruler } from './ruler';
 import { Shape, ShapeDbo } from './shape';
 import { StickyNote, StickyNoteDbo } from './sticky-note';
@@ -80,7 +81,15 @@ export class DataService {
     this.db.object(`${boardId}/rulers`).set(rulers);
   }
 
-  getBoardData(boardId: string): Observable<{ [key: string]: any } | null> {
-    return this.db.object(boardId).valueChanges().pipe(take(1));
+  getBoardData(boardId: string): Observable<BoardData | null> {
+    return this.db
+      .object<BoardData | null>(boardId)
+      .valueChanges()
+      .pipe(take(1));
+  }
+
+  setBoardData(boardId: string, boardData: BoardData): Promise<void> {
+    // store result without users
+    return this.db.object(boardId).set({ ...boardData, users: {} });
   }
 }
