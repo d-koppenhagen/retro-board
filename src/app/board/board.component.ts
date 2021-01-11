@@ -80,6 +80,7 @@ export class BoardComponent implements OnInit {
       top: 50,
       backgroundColor: this.fillColor,
       editMode: true,
+      rotation: this.roundHalf(this.randomBetween(-2, 2)),
     });
   }
 
@@ -271,5 +272,23 @@ export class BoardComponent implements OnInit {
       // todo: open error dialog
       console.log(error);
     };
+  }
+
+  /**
+   * get random float value between min and max
+   */
+  private randomBetween(min: number, max: number): number {
+    if (min < 0) {
+      return min + Math.random() * (Math.abs(min) + max);
+    } else {
+      return min + Math.random() * max;
+    }
+  }
+
+  /**
+   * round to the nearest 0.25 value
+   */
+  private roundHalf(num: number): number {
+    return Math.round(num * 4) / 4;
   }
 }

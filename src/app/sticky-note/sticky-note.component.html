@@ -6,6 +6,7 @@
   *ngIf="!hideNote"
   [style.left]="note.left + 'px'"
   [style.top]="note.top + 'px'"
+  [style.transform]="'rotate(' + (note.rotation || 0) + 'deg)'"
 >
   <svg width="0" height="0">
     <defs>

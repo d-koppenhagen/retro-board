@@ -6,6 +6,7 @@ export interface StickyNote {
   left: number;
   backgroundColor: string;
   editMode: boolean;
+  rotation?: number;
 }
 
 export interface StickyNoteDbo {
