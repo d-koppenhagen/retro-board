@@ -28,8 +28,8 @@ export class BoardComponent implements OnInit {
   title = 'Canvas';
   shape = '';
   strokeWidth = 4;
-  strokeColor = '#ffc107';
-  fillColor = 'transparent';
+  strokeColor = '#336AE1';
+  fillColor = '#ffeb3b';
   currentFillColorIdx = 0;
   currentStrokeColorIdx = 2;
   name = '';
