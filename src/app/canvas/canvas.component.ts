@@ -39,6 +39,7 @@ export class CanvasComponent implements OnInit, AfterViewInit {
   boardId: string;
 
   canvas: HTMLCanvasElement;
+  audio: HTMLAudioElement;
   private internalData: Partial<Shape>;
 
   constructor(
@@ -241,6 +242,9 @@ export class CanvasComponent implements OnInit, AfterViewInit {
 
   // Mouse Drag event start function
   dragStart(event: MouseEvent) {
+    if (this.shape === 'erase') {
+      this.audio.play();
+    }
     this.internalData.dragging = true;
     this.dragging = true;
     if (this.shape !== 'erase') {
@@ -297,6 +301,9 @@ export class CanvasComponent implements OnInit, AfterViewInit {
 
   // Mouse Drag event stop function
   dragStop(event: MouseEvent) {
+    if (this.shape === 'erase') {
+      this.audio.pause();
+    }
     this.dragging = false;
     this.internalData.dragging = false;
     if (
@@ -331,6 +338,7 @@ export class CanvasComponent implements OnInit, AfterViewInit {
   // Initialization Method
   init() {
     this.canvas = document.getElementById('canvas') as HTMLCanvasElement;
+    this.audio = document.getElementById('eraserAudio') as HTMLAudioElement;
     this.context = this.canvas.getContext('2d');
     this.context.strokeStyle = this.strokeColor;
     this.context.fillStyle = this.fillColor;
