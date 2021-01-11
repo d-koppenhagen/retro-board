@@ -14,6 +14,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { OwnUser } from '../shared/active-users';
 import { ClearBoardDialogComponent } from '../clear-board-dialog/clear-board-dialog.component';
 import { Ruler } from '../shared/ruler';
+import html2canvas from 'html2canvas';
 
 @Component({
   selector: 'app-board',
@@ -230,5 +231,30 @@ export class BoardComponent implements OnInit {
 
   updateRulers(rulers: Ruler[]) {
     this.dataService.setRulers(this.boardId, rulers);
+  }
+
+  exportAsImage() {
+    html2canvas(document.getElementById('mat-card-content')).then((canvas) => {
+      console.log(canvas);
+      const href = canvas
+        .toDataURL()
+        .replace('image/png', 'image/octet-stream');
+      const a = document.createElement('a');
+      a.href = href;
+      a.download = `board-${this.boardId}.png`;
+      a.click();
+    });
+  }
+
+  exportAsJSON() {
+    this.dataService.getBoardData(this.boardId).subscribe((res) => {
+      const href =
+        'data:text/json;charset=utf-8,' +
+        encodeURIComponent(JSON.stringify(res, null, 2));
+      const a = document.createElement('a');
+      a.href = href;
+      a.download = `board-${this.boardId}.json`;
+      a.click();
+    });
   }
 }

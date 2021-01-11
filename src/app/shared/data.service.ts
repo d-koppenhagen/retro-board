@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { AngularFireDatabase } from '@angular/fire/database';
 import { Observable } from 'rxjs';
+import { take } from 'rxjs/operators';
 import { v4 as uuidv4 } from 'uuid';
 import { ActiveUsers, OwnUser } from './active-users';
 import { Ruler } from './ruler';
@@ -77,5 +78,9 @@ export class DataService {
 
   setRulers(boardId: string, rulers: Ruler[]): void {
     this.db.object(`${boardId}/rulers`).set(rulers);
+  }
+
+  getBoardData(boardId: string): Observable<{ [key: string]: any } | null> {
+    return this.db.object(boardId).valueChanges().pipe(take(1));
   }
 }

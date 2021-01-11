@@ -131,6 +131,18 @@
     ></mat-slider>
     <div class="ml15 mr5">{{ strokeWidth }}</div>
     <div class="toolbar-separator"></div>
+    <button
+      mat-icon-button
+      matTooltip="Export Data"
+      [matMenuTriggerFor]="exportMenu"
+    >
+      <mat-icon class="toolbar-icon">import_export</mat-icon>
+    </button>
+    <mat-menu #exportMenu="matMenu">
+      <button mat-menu-item (click)="exportAsImage()">Export as Image</button>
+      <button mat-menu-item (click)="exportAsJSON()">Export as JSON</button>
+    </mat-menu>
+    <div class="toolbar-separator"></div>
     <div class="ml15">Online:</div>
     <div class="ml15" fxLayout="row">
       <div
@@ -145,7 +157,7 @@
     </div>
   </mat-toolbar-row>
 </mat-toolbar>
-<mat-card>
+<mat-card id="mat-card-content">
   <app-canvas
     [width]="400"
     [height]="400"
