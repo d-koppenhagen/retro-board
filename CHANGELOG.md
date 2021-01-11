@@ -2,6 +2,23 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.0.3](https://github.com/d-koppenhagen/retro-board/compare/v0.0.2...v0.0.3) (2021-01-11)
+
+
+### Features
+
+* add eraser noise ([886878a](https://github.com/d-koppenhagen/retro-board/commit/886878ab5715bf7d090e89c3341e881174c9f614))
+* allow to export board data ([94726ce](https://github.com/d-koppenhagen/retro-board/commit/94726cee224781c9adba47dea04daf01cd968121)), closes [#7](https://github.com/d-koppenhagen/retro-board/issues/7)
+* change default colors ([c401eb6](https://github.com/d-koppenhagen/retro-board/commit/c401eb69bbd42b6470fe4bd244cf0ac5a5b23c26))
+* import board data from JSON file ([c243361](https://github.com/d-koppenhagen/retro-board/commit/c243361c6e3ba8282166185b72e34b0051c2ec63)), closes [#9](https://github.com/d-koppenhagen/retro-board/issues/9)
+* randomly rotat stickies a bit ([42d8565](https://github.com/d-koppenhagen/retro-board/commit/42d85657eb9a43669dd594f8bf7fc0ee86025035))
+* reduce range for pen radius ([3b1b90f](https://github.com/d-koppenhagen/retro-board/commit/3b1b90f446e3f3f4bf570ff318c1bd3b06e5f7cb))
+
+
+### Bug Fixes
+
+* free hand draw ([a05d05f](https://github.com/d-koppenhagen/retro-board/commit/a05d05fe63c8d8361558cdf9e7999fda20a3fdea))
+
 ### 0.0.2 (2021-01-10)
 
 
