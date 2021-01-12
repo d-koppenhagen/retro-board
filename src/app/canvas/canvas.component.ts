@@ -78,7 +78,6 @@ export class CanvasComponent implements OnInit, AfterViewInit {
               value.fillStyle,
               value.dragging
             );
-            this.takeSnapshot();
           }
         }
       });
@@ -99,21 +98,6 @@ export class CanvasComponent implements OnInit, AfterViewInit {
     const y = event.clientY - this.canvas.getBoundingClientRect().top;
 
     return { x, y };
-  }
-
-  // Method to get the snapshot of the Canvas
-  takeSnapshot() {
-    this.snapshot = this.context.getImageData(
-      0,
-      0,
-      this.canvas.width,
-      this.canvas.height
-    );
-  }
-
-  // Method to restore the snapshot of the Canvas
-  restoreSnapshot() {
-    this.context.putImageData(this.snapshot, 0, 0);
   }
 
   // Method to draw the particular shape
@@ -196,7 +180,7 @@ export class CanvasComponent implements OnInit, AfterViewInit {
 
   // Method to Draw Free Text
   drawFree(position: DragPosition) {
-    if (this.internalData.dragging === true) {
+    if (this.internalData.dragging) {
       this.context.beginPath();
       this.context.lineJoin = 'round';
       this.context.moveTo(this.lastX, this.lastY);
@@ -259,27 +243,21 @@ export class CanvasComponent implements OnInit, AfterViewInit {
     ) {
       this.lastX = this.dragStartLocation.x;
       this.lastY = this.dragStartLocation.y;
-    } else {
-      this.takeSnapshot();
     }
   }
 
   // Mouse Drag event function
   drag(event: MouseEvent) {
-    let position: DragPosition;
     if (this.internalData.dragging === true) {
-      position = this.getCanvasCoordinates(event);
       if (
-        this.internalData.shape !== 'free' &&
-        this.internalData.shape !== 'erase'
+        this.internalData.shape === 'free' ||
+        this.internalData.shape === 'erase'
       ) {
-        this.restoreSnapshot();
-      } else {
         const shapeObj: Shape = {
           uuid: uuidv4(),
           shape: this.shape,
           dragStartLocation: this.getCanvasCoordinates(event),
-          position,
+          position: this.getCanvasCoordinates(event),
           strokeStyle: this.strokeColor,
           lineWidth: this.strokeWidth,
           fillStyle: this.fillColor,
@@ -297,13 +275,6 @@ export class CanvasComponent implements OnInit, AfterViewInit {
     }
     this.dragging = false;
     this.internalData.dragging = false;
-    if (
-      this.internalData.shape !== 'free' &&
-      this.internalData.shape !== 'erase'
-    ) {
-      this.restoreSnapshot();
-    }
-    this.takeSnapshot();
     const position = this.getCanvasCoordinates(event);
     const shapeObj = {
       uuid: uuidv4(),
