@@ -17,13 +17,7 @@ export interface DragPosition {
   y: number;
 }
 
-export type ShapeType =
-  | 'line'
-  | 'circle'
-  | 'free'
-  | 'rectangle'
-  | 'erase'
-  | 'sticky_note';
+export type ShapeType = 'line' | 'circle' | 'rectangle' | 'sticky_note';
 
 export interface ShapeDbo {
   [uuid: string]: Omit<Shape, 'uuid'>;

@@ -36,14 +36,6 @@
     <div class="toolbar-separator"></div>
     <button
       mat-icon-button
-      matTooltip="Draw"
-      [color]="shape === 'free' ? 'accent' : ''"
-      (click)="shape = 'free'"
-    >
-      <mat-icon class="toolbar-icon">create</mat-icon>
-    </button>
-    <button
-      mat-icon-button
       matTooltip="Line"
       [color]="shape === 'line' ? 'accent' : ''"
       (click)="shape = 'line'"
@@ -86,14 +78,6 @@
       <mat-icon class="toolbar-icon">format_color_fill</mat-icon>
     </button>
     <div class="toolbar-separator"></div>
-    <button
-      mat-icon-button
-      matTooltip="Erase"
-      [color]="shape === 'erase' ? 'accent' : ''"
-      (click)="shape = 'erase'"
-    >
-      <mat-icon class="toolbar-icon">video_label</mat-icon>
-    </button>
     <button mat-icon-button matTooltip="Clear Canvas" (click)="clearAll()">
       <mat-icon class="toolbar-icon">layers_clear</mat-icon>
     </button>

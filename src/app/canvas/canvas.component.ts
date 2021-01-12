@@ -131,18 +131,10 @@ export class CanvasComponent implements OnInit, AfterViewInit {
         this.drawCircle(position);
         break;
 
-      case 'free':
-        this.drawFree(position);
-        break;
-
       case 'rectangle':
         this.drawRectangle(position);
         break;
 
-      case 'erase':
-        this.context.strokeStyle = 'white';
-        this.drawFree(position);
-        break;
       default:
         break;
     }
@@ -176,20 +168,6 @@ export class CanvasComponent implements OnInit, AfterViewInit {
     );
     this.context.fill();
     this.context.stroke();
-  }
-
-  // Method to Draw Free Text
-  drawFree(position: DragPosition) {
-    if (this.internalData.dragging) {
-      this.context.beginPath();
-      this.context.lineJoin = 'round';
-      this.context.moveTo(this.lastX, this.lastY);
-      this.context.lineTo(position.x, position.y);
-      this.context.closePath();
-      this.context.stroke();
-    }
-    this.lastX = position.x;
-    this.lastY = position.y;
   }
 
   // Method to Draw Rectangle
@@ -226,53 +204,16 @@ export class CanvasComponent implements OnInit, AfterViewInit {
 
   // Mouse Drag event start function
   dragStart(event: MouseEvent) {
-    if (this.shape === 'erase') {
-      this.audio.play();
-    }
     this.internalData.dragging = true;
     this.dragging = true;
-    if (this.shape !== 'erase') {
-      this.context.strokeStyle = this.strokeColor;
-    }
+    this.context.strokeStyle = this.strokeColor;
     this.context.fillStyle = this.fillColor;
     this.context.lineWidth = this.strokeWidth;
     this.dragStartLocation = this.getCanvasCoordinates(event);
-    if (
-      this.internalData.shape === 'free' ||
-      this.internalData.shape === 'erase'
-    ) {
-      this.lastX = this.dragStartLocation.x;
-      this.lastY = this.dragStartLocation.y;
-    }
-  }
-
-  // Mouse Drag event function
-  drag(event: MouseEvent) {
-    if (this.internalData.dragging === true) {
-      if (
-        this.internalData.shape === 'free' ||
-        this.internalData.shape === 'erase'
-      ) {
-        const shapeObj: Shape = {
-          uuid: uuidv4(),
-          shape: this.shape,
-          dragStartLocation: this.getCanvasCoordinates(event),
-          position: this.getCanvasCoordinates(event),
-          strokeStyle: this.strokeColor,
-          lineWidth: this.strokeWidth,
-          fillStyle: this.fillColor,
-          dragging: this.dragging,
-        };
-        this.dataService.draw(this.boardId, shapeObj);
-      }
-    }
   }
 
   // Mouse Drag event stop function
   dragStop(event: MouseEvent) {
-    if (this.shape === 'erase') {
-      this.audio.pause();
-    }
     this.dragging = false;
     this.internalData.dragging = false;
     const position = this.getCanvasCoordinates(event);
@@ -291,7 +232,6 @@ export class CanvasComponent implements OnInit, AfterViewInit {
   // Initialization Method
   init() {
     this.canvas = document.getElementById('canvas') as HTMLCanvasElement;
-    this.audio = document.getElementById('eraserAudio') as HTMLAudioElement;
     this.context = this.canvas.getContext('2d');
     this.context.strokeStyle = this.strokeColor;
     this.context.fillStyle = this.fillColor;
@@ -299,7 +239,6 @@ export class CanvasComponent implements OnInit, AfterViewInit {
     this.context.lineCap = 'round';
 
     this.canvas.addEventListener('mousedown', this.dragStart.bind(this), false);
-    this.canvas.addEventListener('mousemove', this.drag.bind(this), false);
     this.canvas.addEventListener('mouseup', this.dragStop.bind(this), false);
 
     this.resizeCanvasToDisplaySize();
@@ -321,9 +260,7 @@ export class CanvasComponent implements OnInit, AfterViewInit {
       this.canvas.width = width;
       this.canvas.height = height;
       this.context.drawImage(tempCnvs, 0, 0);
-      if (this.shape !== 'erase') {
-        this.context.strokeStyle = this.strokeColor;
-      }
+      this.context.strokeStyle = this.strokeColor;
       this.context.fillStyle = this.fillColor;
       this.context.lineWidth = this.strokeWidth;
       this.context.lineCap = 'round';
