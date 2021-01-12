@@ -40,6 +40,7 @@ export class CanvasComponent implements OnInit, AfterViewInit {
 
   canvas: HTMLCanvasElement;
   audio: HTMLAudioElement;
+  private internalData: Partial<Shape>;
 
   constructor(
     private dataService: DataService,
@@ -64,7 +65,7 @@ export class CanvasComponent implements OnInit, AfterViewInit {
       .subscribe((shape: ShapeDbo) => {
         if (shape) {
           for (const [key, value] of Object.entries(shape)) {
-            if (this.dragging && shape.dragging) {
+            if (this.internalData.dragging && shape.dragging) {
               this.lastX = value.dragStartLocation.x;
               this.lastY = value.dragStartLocation.y;
             }
@@ -77,9 +78,19 @@ export class CanvasComponent implements OnInit, AfterViewInit {
               value.fillStyle,
               value.dragging
             );
+            this.takeSnapshot();
           }
         }
       });
+
+    this.internalData = {
+      shape: this.shape,
+      dragStartLocation: this.dragStartLocation,
+      strokeStyle: this.strokeColor,
+      lineWidth: this.strokeWidth,
+      fillStyle: this.fillColor,
+      dragging: this.dragging,
+    };
   }
 
   // Method to get the coordinates of the canvas
@@ -88,6 +99,21 @@ export class CanvasComponent implements OnInit, AfterViewInit {
     const y = event.clientY - this.canvas.getBoundingClientRect().top;
 
     return { x, y };
+  }
+
+  // Method to get the snapshot of the Canvas
+  takeSnapshot() {
+    this.snapshot = this.context.getImageData(
+      0,
+      0,
+      this.canvas.width,
+      this.canvas.height
+    );
+  }
+
+  // Method to restore the snapshot of the Canvas
+  restoreSnapshot() {
+    this.context.putImageData(this.snapshot, 0, 0);
   }
 
   // Method to draw the particular shape
@@ -100,10 +126,19 @@ export class CanvasComponent implements OnInit, AfterViewInit {
     fillStyle: string,
     dragging: boolean
   ) {
-    this.context.strokeStyle = strokeStyle;
-    this.context.fillStyle = fillStyle;
-    this.context.lineWidth = lineWidth;
-    switch (shape) {
+    this.internalData = {
+      shape,
+      dragStartLocation,
+      position,
+      strokeStyle,
+      lineWidth,
+      fillStyle,
+      dragging,
+    };
+    this.context.strokeStyle = this.internalData.strokeStyle;
+    this.context.fillStyle = this.internalData.fillStyle;
+    this.context.lineWidth = this.internalData.lineWidth;
+    switch (this.internalData.shape) {
       case 'line':
         this.drawLine(position);
         break;
@@ -132,7 +167,10 @@ export class CanvasComponent implements OnInit, AfterViewInit {
   // Method to Draw Line
   drawLine(position: DragPosition) {
     this.context.beginPath();
-    this.context.moveTo(this.dragStartLocation.x, this.dragStartLocation.y);
+    this.context.moveTo(
+      this.internalData.dragStartLocation.x,
+      this.internalData.dragStartLocation.y
+    );
     this.context.lineTo(position.x, position.y);
     this.context.stroke();
   }
@@ -140,13 +178,13 @@ export class CanvasComponent implements OnInit, AfterViewInit {
   // Method to Draw Circle
   drawCircle(position: DragPosition) {
     const radius = Math.sqrt(
-      Math.pow(this.dragStartLocation.x - position.x, 2) +
-        Math.pow(this.dragStartLocation.y - position.y, 2)
+      Math.pow(this.internalData.dragStartLocation.x - position.x, 2) +
+        Math.pow(this.internalData.dragStartLocation.y - position.y, 2)
     );
     this.context.beginPath();
     this.context.arc(
-      this.dragStartLocation.x,
-      this.dragStartLocation.y,
+      this.internalData.dragStartLocation.x,
+      this.internalData.dragStartLocation.y,
       radius,
       0,
       2 * Math.PI,
@@ -158,7 +196,7 @@ export class CanvasComponent implements OnInit, AfterViewInit {
 
   // Method to Draw Free Text
   drawFree(position: DragPosition) {
-    if (this.dragging === true) {
+    if (this.internalData.dragging === true) {
       this.context.beginPath();
       this.context.lineJoin = 'round';
       this.context.moveTo(this.lastX, this.lastY);
@@ -172,21 +210,29 @@ export class CanvasComponent implements OnInit, AfterViewInit {
 
   // Method to Draw Rectangle
   drawRectangle(position: DragPosition) {
-    const lengthX = Math.abs(position.x - this.dragStartLocation.x);
-    const lengthY = Math.abs(position.y - this.dragStartLocation.y);
+    const lengthX = Math.abs(
+      position.x - this.internalData.dragStartLocation.x
+    );
+    const lengthY = Math.abs(
+      position.y - this.internalData.dragStartLocation.y
+    );
     let width;
     let height;
     if (lengthX > lengthY) {
-      width = lengthX * (position.x < this.dragStartLocation.x ? -1 : 1);
-      height = lengthX * (position.y < this.dragStartLocation.y ? -1 : 1);
+      width =
+        lengthX * (position.x < this.internalData.dragStartLocation.x ? -1 : 1);
+      height =
+        lengthX * (position.y < this.internalData.dragStartLocation.y ? -1 : 1);
     } else {
-      width = lengthY * (position.x < this.dragStartLocation.x ? -1 : 1);
-      height = lengthY * (position.y < this.dragStartLocation.y ? -1 : 1);
+      width =
+        lengthY * (position.x < this.internalData.dragStartLocation.x ? -1 : 1);
+      height =
+        lengthY * (position.y < this.internalData.dragStartLocation.y ? -1 : 1);
     }
     this.context.beginPath();
     this.context.rect(
-      this.dragStartLocation.x,
-      this.dragStartLocation.y,
+      this.internalData.dragStartLocation.x,
+      this.internalData.dragStartLocation.y,
       width,
       height
     );
@@ -199,6 +245,7 @@ export class CanvasComponent implements OnInit, AfterViewInit {
     if (this.shape === 'erase') {
       this.audio.play();
     }
+    this.internalData.dragging = true;
     this.dragging = true;
     if (this.shape !== 'erase') {
       this.context.strokeStyle = this.strokeColor;
@@ -206,28 +253,40 @@ export class CanvasComponent implements OnInit, AfterViewInit {
     this.context.fillStyle = this.fillColor;
     this.context.lineWidth = this.strokeWidth;
     this.dragStartLocation = this.getCanvasCoordinates(event);
-    if (this.shape === 'free' || this.shape === 'erase') {
+    if (
+      this.internalData.shape === 'free' ||
+      this.internalData.shape === 'erase'
+    ) {
       this.lastX = this.dragStartLocation.x;
       this.lastY = this.dragStartLocation.y;
+    } else {
+      this.takeSnapshot();
     }
   }
 
   // Mouse Drag event function
   drag(event: MouseEvent) {
     let position: DragPosition;
-    if (this.dragging) {
+    if (this.internalData.dragging === true) {
       position = this.getCanvasCoordinates(event);
-      const shapeObj: Shape = {
-        uuid: uuidv4(),
-        shape: this.shape,
-        dragStartLocation: this.getCanvasCoordinates(event),
-        position,
-        strokeStyle: this.strokeColor,
-        lineWidth: this.strokeWidth,
-        fillStyle: this.fillColor,
-        dragging: this.dragging,
-      };
-      this.dataService.draw(this.boardId, shapeObj);
+      if (
+        this.internalData.shape !== 'free' &&
+        this.internalData.shape !== 'erase'
+      ) {
+        this.restoreSnapshot();
+      } else {
+        const shapeObj: Shape = {
+          uuid: uuidv4(),
+          shape: this.shape,
+          dragStartLocation: this.getCanvasCoordinates(event),
+          position,
+          strokeStyle: this.strokeColor,
+          lineWidth: this.strokeWidth,
+          fillStyle: this.fillColor,
+          dragging: this.dragging,
+        };
+        this.dataService.draw(this.boardId, shapeObj);
+      }
       this.drawShape(
         position,
         this.shape,
@@ -246,6 +305,14 @@ export class CanvasComponent implements OnInit, AfterViewInit {
       this.audio.pause();
     }
     this.dragging = false;
+    this.internalData.dragging = false;
+    if (
+      this.internalData.shape !== 'free' &&
+      this.internalData.shape !== 'erase'
+    ) {
+      this.restoreSnapshot();
+    }
+    this.takeSnapshot();
     const position = this.getCanvasCoordinates(event);
     this.drawShape(
       position,
