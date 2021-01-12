@@ -287,15 +287,6 @@ export class CanvasComponent implements OnInit, AfterViewInit {
         };
         this.dataService.draw(this.boardId, shapeObj);
       }
-      this.drawShape(
-        position,
-        this.shape,
-        this.dragStartLocation,
-        this.strokeColor,
-        this.strokeWidth,
-        this.fillColor,
-        this.dragging
-      );
     }
   }
 
@@ -314,15 +305,6 @@ export class CanvasComponent implements OnInit, AfterViewInit {
     }
     this.takeSnapshot();
     const position = this.getCanvasCoordinates(event);
-    this.drawShape(
-      position,
-      this.shape,
-      this.dragStartLocation,
-      this.strokeColor,
-      this.strokeWidth,
-      this.fillColor,
-      this.dragging
-    );
     const shapeObj = {
       uuid: uuidv4(),
       shape: this.shape,
