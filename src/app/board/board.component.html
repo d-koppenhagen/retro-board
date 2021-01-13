@@ -36,25 +36,33 @@
     <div class="toolbar-separator"></div>
     <button
       mat-icon-button
+      matTooltip="Draw"
+      [color]="tool === 'free' ? 'accent' : ''"
+      (click)="tool = 'free'"
+    >
+      <mat-icon class="toolbar-icon">create</mat-icon>
+    </button>
+    <button
+      mat-icon-button
       matTooltip="Line"
-      [color]="shape === 'line' ? 'accent' : ''"
-      (click)="shape = 'line'"
+      [color]="tool === 'line' ? 'accent' : ''"
+      (click)="tool = 'line'"
     >
       <mat-icon class="toolbar-icon">show_chart</mat-icon>
     </button>
     <button
       mat-icon-button
       matTooltip="Circle"
-      [color]="shape === 'circle' ? 'accent' : ''"
-      (click)="shape = 'circle'"
+      [color]="tool === 'circle' ? 'accent' : ''"
+      (click)="tool = 'circle'"
     >
       <mat-icon class="toolbar-icon">radio_button_unchecked</mat-icon>
     </button>
     <button
       mat-icon-button
       matTooltip="Rectangle"
-      [color]="shape === 'rectangle' ? 'accent' : ''"
-      (click)="shape = 'rectangle'"
+      [color]="tool === 'rectangle' ? 'accent' : ''"
+      (click)="tool = 'rectangle'"
     >
       <mat-icon class="toolbar-icon">check_box_outline_blank</mat-icon>
     </button>
@@ -108,12 +116,12 @@
       >border_outer</mat-icon
     >
     <mat-slider
-      [(ngModel)]="strokeWidth"
+      [(ngModel)]="lineWidth"
       [min]="1"
       [max]="100"
       [step]="1"
     ></mat-slider>
-    <div class="ml15 mr5">{{ strokeWidth }}</div>
+    <div class="ml15 mr5">{{ lineWidth }}</div>
     <div class="toolbar-separator"></div>
     <button
       mat-icon-button
@@ -156,10 +164,10 @@
   <app-canvas
     [width]="400"
     [height]="400"
-    [shape]="shape"
+    [tool]="tool"
     [strokeColor]="strokeColor"
     [fillColor]="fillColor"
-    [strokeWidth]="strokeWidth"
+    [lineWidth]="lineWidth"
     [rulers]="rulers"
     (updateRulers)="updateRulers($event)"
     #appCanvas

@@ -26,8 +26,8 @@ export class BoardComponent implements OnInit {
   @ViewChild('appCanvas', { static: true }) appCanvas: CanvasComponent;
   boardId: string;
   title = 'Canvas';
-  shape = '';
-  strokeWidth = 4;
+  tool = '';
+  lineWidth = 4;
   strokeColor = '#336AE1';
   fillColor = '#ffeb3b';
   currentFillColorIdx = 0;
@@ -71,7 +71,7 @@ export class BoardComponent implements OnInit {
    * add a new empty note
    */
   addNote(): void {
-    this.shape = 'sticky_note';
+    this.tool = 'sticky_note';
     this.stickyNotes.push({
       title: '',
       description: '',

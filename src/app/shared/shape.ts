@@ -1,15 +1,10 @@
 export interface Shape {
-  position: {
-    x: number;
-    y: number;
-  };
   uuid: string;
-  shape: ShapeType;
-  dragStartLocation: DragPosition;
-  strokeStyle: string;
+  type: Tool;
+  shape: Free | Line | Circle | Rectangle;
+  strokeColor: string;
   lineWidth: number;
-  fillStyle: string;
-  dragging?: boolean;
+  fillColor: string;
 }
 
 export interface DragPosition {
@@ -17,7 +12,33 @@ export interface DragPosition {
   y: number;
 }
 
-export type ShapeType = 'line' | 'circle' | 'rectangle' | 'sticky_note';
+export interface Free {
+  points: DragPosition[];
+  closed: boolean;
+}
+
+export interface Line {
+  start: DragPosition;
+  end: DragPosition;
+}
+
+export interface Circle {
+  start: DragPosition;
+  end: DragPosition;
+}
+
+export interface Rectangle {
+  start: DragPosition;
+  end: DragPosition;
+}
+
+export type Tool =
+  | 'free'
+  | 'free_closed'
+  | 'line'
+  | 'circle'
+  | 'rectangle'
+  | 'sticky_note';
 
 export interface ShapeDbo {
   [uuid: string]: Omit<Shape, 'uuid'>;
