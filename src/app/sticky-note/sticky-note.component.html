@@ -55,23 +55,15 @@
 
           <div class="cta-buttons">
             <button
-              mat-raised-button
-              color="primary"
-              class="button"
+              mat-icon-button
+              aria-label="Save"
               [disabled]="!formGroup.valid"
               type="submit"
             >
-              Save
+              <mat-icon>save</mat-icon>
             </button>
-
-            <button
-              mat-raised-button
-              color="secondary"
-              class="button"
-              type="button"
-              (click)="cancelEdit()"
-            >
-              Cancel
+            <button mat-icon-button aria-label="Remove" (click)="cancelEdit()">
+              <mat-icon>delete</mat-icon>
             </button>
           </div>
         </form>
