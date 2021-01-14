@@ -2,6 +2,16 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.0.5](https://github.com/d-koppenhagen/retro-board/compare/v0.0.4...v0.0.5) (2021-01-14)
+
+
+### Features
+
+* allow to change the board slug ([19919b8](https://github.com/d-koppenhagen/retro-board/commit/19919b81635b7c03bf688f53147946a206b34bbd)), closes [#10](https://github.com/d-koppenhagen/retro-board/issues/10)
+* better button style on sticky notes ([e2edb19](https://github.com/d-koppenhagen/retro-board/commit/e2edb19bcba79598e831483f8124152561f9bb71))
+* select free hand tool by default ([59d54dd](https://github.com/d-koppenhagen/retro-board/commit/59d54dd476558af24b131d4cd2498c650c57995d))
+* vote on sticky notes ([7047f4c](https://github.com/d-koppenhagen/retro-board/commit/7047f4c3a0da58be54dd6e9231b45cded3027819)), closes [#11](https://github.com/d-koppenhagen/retro-board/issues/11)
+
 ### [0.0.4](https://github.com/d-koppenhagen/retro-board/compare/v0.0.3...v0.0.4) (2021-01-12)
 
 
