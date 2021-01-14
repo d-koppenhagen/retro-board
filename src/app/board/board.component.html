@@ -30,6 +30,30 @@
     </div>
   </mat-toolbar-row>
   <mat-toolbar-row class="hAuto toolbar">
+    <button
+      mat-icon-button
+      matTooltip="Export Data"
+      [matMenuTriggerFor]="exportMenu"
+    >
+      <mat-icon class="toolbar-icon">menu</mat-icon>
+    </button>
+    <mat-menu #exportMenu="matMenu">
+      <button mat-menu-item (click)="changeBoardUrl()">Change board URL</button>
+      <button mat-menu-item (click)="exportAsImage()">Export as Image</button>
+      <button mat-menu-item (click)="exportAsJSON()">Export as JSON</button>
+      <input
+        #jsonInput
+        hidden="true"
+        type="file"
+        onclick="this.value=null"
+        (change)="importAsJSON($event)"
+        accept=".json"
+      />
+      <button mat-menu-item (click)="jsonInput.click()">
+        Import from JSON File
+      </button>
+    </mat-menu>
+    <div class="toolbar-separator"></div>
     <button mat-icon-button matTooltip="Sticky Note" (click)="addNote()">
       <mat-icon class="toolbar-icon">sticky_note_2</mat-icon>
     </button>
@@ -122,29 +146,6 @@
       [step]="1"
     ></mat-slider>
     <div class="ml15 mr5">{{ lineWidth }}</div>
-    <div class="toolbar-separator"></div>
-    <button
-      mat-icon-button
-      matTooltip="Export Data"
-      [matMenuTriggerFor]="exportMenu"
-    >
-      <mat-icon class="toolbar-icon">import_export</mat-icon>
-    </button>
-    <mat-menu #exportMenu="matMenu">
-      <button mat-menu-item (click)="exportAsImage()">Export as Image</button>
-      <button mat-menu-item (click)="exportAsJSON()">Export as JSON</button>
-      <input
-        #jsonInput
-        hidden="true"
-        type="file"
-        onclick="this.value=null"
-        (change)="importAsJSON($event)"
-        accept=".json"
-      />
-      <button mat-menu-item (click)="jsonInput.click()">
-        Import from JSON File
-      </button>
-    </mat-menu>
     <div class="toolbar-separator"></div>
     <div class="ml15">Online:</div>
     <div class="ml15" fxLayout="row">

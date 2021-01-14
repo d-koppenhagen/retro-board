@@ -5,6 +5,7 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { FlexLayoutModule } from '@angular/flex-layout';
 import { DragDropModule } from '@angular/cdk/drag-drop';
 import { MatButtonModule } from '@angular/material/button';
+import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatCardModule } from '@angular/material/card';
 import { MatDialogModule } from '@angular/material/dialog';
 import { MatDividerModule } from '@angular/material/divider';
@@ -31,6 +32,7 @@ import { BoardComponent } from './board/board.component';
 import { HttpClientModule } from '@angular/common/http';
 import { ClearBoardDialogComponent } from './clear-board-dialog/clear-board-dialog.component';
 import { RulerComponent } from './ruler/ruler.component';
+import { BoardUrlDialogComponent } from './board-url-dialog/board-url-dialog.component';
 
 @NgModule({
   declarations: [
@@ -42,12 +44,14 @@ import { RulerComponent } from './ruler/ruler.component';
     BoardComponent,
     ClearBoardDialogComponent,
     RulerComponent,
+    BoardUrlDialogComponent,
   ],
   imports: [
     BrowserModule,
     BrowserAnimationsModule,
     FlexLayoutModule,
     MatButtonModule,
+    MatCheckboxModule,
     MatCardModule,
     MatDialogModule,
     MatDividerModule,

@@ -5,7 +5,7 @@ import { BoardComponent } from './board/board.component';
 
 const routes: Routes = [
   {
-    path: ':boardId',
+    path: ':slug',
     component: BoardComponent,
   },
   { path: '**', redirectTo: uuidv4() },

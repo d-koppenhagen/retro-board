@@ -1,0 +1,27 @@
+<div mat-dialog-title>Change the slug</div>
+<div mat-dialog-content>
+  <mat-form-field color="accent">
+    <input
+      matInput
+      [(ngModel)]="slug"
+      placeholder="What's your name?"
+      required
+      (keyup.enter)="changeSlug()"
+    />
+    <mat-error *ngIf="!slug">Slug is required</mat-error>
+  </mat-form-field>
+  <mat-checkbox [(ngModel)]="checked"
+    >Warning: It will override a board when the slug already
+    exists.</mat-checkbox
+  >
+</div>
+<div mat-dialog-actions>
+  <button
+    mat-raised-button
+    color="accent"
+    (click)="changeSlug()"
+    [disabled]="!checked || !slug"
+  >
+    Change
+  </button>
+</div>

@@ -15,28 +15,28 @@ import { StickyNote, StickyNoteDbo } from './sticky-note';
 export class DataService {
   constructor(private db: AngularFireDatabase) {}
 
-  updateStickyNote(boardId: string, note: StickyNote): void {
+  updateStickyNote(slug: string, note: StickyNote): void {
     const noteRevised = { ...note };
     delete noteRevised.uuid;
-    this.db.object(`${boardId}/stickyNotes/${note.uuid}`).set(noteRevised);
+    this.db.object(`${slug}/stickyNotes/${note.uuid}`).set(noteRevised);
   }
 
-  stickyNotesUpdates(boardId: string): Observable<StickyNoteDbo | null> {
+  stickyNotesUpdates(slug: string): Observable<StickyNoteDbo | null> {
     return this.db
-      .object<StickyNoteDbo | null>(`${boardId}/stickyNotes`)
+      .object<StickyNoteDbo | null>(`${slug}/stickyNotes`)
       .valueChanges();
   }
 
-  updateCanvas(boardId: string, dataUrl: string) {
-    this.db.object(`${boardId}/canvas`).set(dataUrl);
+  updateCanvas(slug: string, dataUrl: string) {
+    this.db.object(`${slug}/canvas`).set(dataUrl);
   }
 
-  canvasUpdates(boardId: string): Observable<ShapeDbo> {
-    return this.db.object<ShapeDbo>(`${boardId}/canvasData`).valueChanges();
+  canvasUpdates(slug: string): Observable<ShapeDbo> {
+    return this.db.object<ShapeDbo>(`${slug}/canvasData`).valueChanges();
   }
 
-  draw(boardId: string, shape: Shape) {
-    this.db.object(`${boardId}/canvasData/${uuidv4()}`).set(shape);
+  draw(slug: string, shape: Shape) {
+    this.db.object(`${slug}/canvasData/${uuidv4()}`).set(shape);
   }
 
   setOwnUser(user: OwnUser) {
@@ -47,49 +47,55 @@ export class DataService {
     return JSON.parse(sessionStorage.getItem('user'));
   }
 
-  ownUserOnline(boardId: string, user: OwnUser): void {
-    this.db.object(`${boardId}/users/${user.uuid}`).set(user.username);
+  ownUserOnline(slug: string, user: OwnUser): void {
+    this.db.object(`${slug}/users/${user.uuid}`).set(user.username);
   }
 
-  getUsers(boardId: string): Observable<ActiveUsers | null> {
-    return this.db
-      .object<ActiveUsers | null>(`${boardId}/users`)
-      .valueChanges();
+  getUsers(slug: string): Observable<ActiveUsers | null> {
+    return this.db.object<ActiveUsers | null>(`${slug}/users`).valueChanges();
   }
 
-  logout(boardId: string, user: OwnUser): void {
-    this.db.object(`${boardId}/users/${user.uuid}`).remove();
+  logout(slug: string, user: OwnUser): void {
+    this.db.object(`${slug}/users/${user.uuid}`).remove();
   }
 
-  clearAll(boardId: string): Promise<void> {
-    return this.db.object(`${boardId}`).remove();
+  clearAll(slug: string): Promise<void> {
+    return this.db.object(`${slug}`).remove();
   }
 
-  getBackgroundImage(boardId: string): Observable<string | null> {
-    return this.db.object<string>(`${boardId}/backgroundImage`).valueChanges();
+  changeBoardLocation(oldSlug: string, newslug: string) {
+    this.getBoardData(oldSlug).subscribe((res) => {
+      this.db
+        .object(`${newslug}`)
+        .set(res)
+        .then(() => {
+          this.db.object(`${oldSlug}`).remove();
+        });
+    });
   }
 
-  setBackgroundImage(boardId: string, backgroundImageUrl: string): void {
-    this.db.object(`${boardId}/backgroundImage`).set(backgroundImageUrl);
+  getBackgroundImage(slug: string): Observable<string | null> {
+    return this.db.object<string>(`${slug}/backgroundImage`).valueChanges();
   }
 
-  getRulers(boardId: string | null): Observable<Ruler[] | null> {
-    return this.db.object<Ruler[] | null>(`${boardId}/rulers`).valueChanges();
+  setBackgroundImage(slug: string, backgroundImageUrl: string): void {
+    this.db.object(`${slug}/backgroundImage`).set(backgroundImageUrl);
   }
 
-  setRulers(boardId: string, rulers: Ruler[]): void {
-    this.db.object(`${boardId}/rulers`).set(rulers);
+  getRulers(slug: string | null): Observable<Ruler[] | null> {
+    return this.db.object<Ruler[] | null>(`${slug}/rulers`).valueChanges();
   }
 
-  getBoardData(boardId: string): Observable<BoardData | null> {
-    return this.db
-      .object<BoardData | null>(boardId)
-      .valueChanges()
-      .pipe(take(1));
+  setRulers(slug: string, rulers: Ruler[]): void {
+    this.db.object(`${slug}/rulers`).set(rulers);
   }
 
-  setBoardData(boardId: string, boardData: BoardData): Promise<void> {
+  getBoardData(slug: string): Observable<BoardData | null> {
+    return this.db.object<BoardData | null>(slug).valueChanges().pipe(take(1));
+  }
+
+  setBoardData(slug: string, boardData: BoardData): Promise<void> {
     // store result without users
-    return this.db.object(boardId).set({ ...boardData, users: {} });
+    return this.db.object(slug).set({ ...boardData, users: {} });
   }
 }

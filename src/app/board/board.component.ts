@@ -16,6 +16,7 @@ import { ClearBoardDialogComponent } from '../clear-board-dialog/clear-board-dia
 import { Ruler } from '../shared/ruler';
 import html2canvas from 'html2canvas';
 import { BoardData } from '../shared/board-data';
+import { BoardUrlDialogComponent } from '../board-url-dialog/board-url-dialog.component';
 
 @Component({
   selector: 'app-board',
@@ -24,7 +25,7 @@ import { BoardData } from '../shared/board-data';
 })
 export class BoardComponent implements OnInit {
   @ViewChild('appCanvas', { static: true }) appCanvas: CanvasComponent;
-  boardId: string;
+  slug: string;
   title = 'Canvas';
   tool = 'free';
   lineWidth = 4;
@@ -101,7 +102,7 @@ export class BoardComponent implements OnInit {
       (note) => note.uuid === stickyNote.uuid
     );
     this.stickyNotes[matchIndex] = stickyNote;
-    this.dataService.updateStickyNote(this.boardId, stickyNote);
+    this.dataService.updateStickyNote(this.slug, stickyNote);
     // this.dataService.updateNotes(this.stickyNotes);
   }
 
@@ -116,14 +117,14 @@ export class BoardComponent implements OnInit {
 
     dialogRef.afterClosed().subscribe((user: OwnUser) => {
       this.name = user.username;
-      this.dataService.ownUserOnline(this.boardId, user);
+      this.dataService.ownUserOnline(this.slug, user);
     });
   }
 
   // Method to logout
   logout() {
     this.name = '';
-    this.dataService.logout(this.boardId, this.dataService.getOwnUser());
+    this.dataService.logout(this.slug, this.dataService.getOwnUser());
     this.openDialog();
   }
 
@@ -134,7 +135,7 @@ export class BoardComponent implements OnInit {
 
     dialogRef.afterClosed().subscribe((doClear: boolean) => {
       if (doClear) {
-        this.dataService.clearAll(this.boardId).then(() => {
+        this.dataService.clearAll(this.slug).then(() => {
           location.reload();
         });
       }
@@ -143,7 +144,7 @@ export class BoardComponent implements OnInit {
 
   // Init Method for the component
   ngOnInit() {
-    this.boardId = this.route.snapshot.paramMap.get('boardId');
+    this.slug = this.route.snapshot.paramMap.get('slug');
     this.initBoard();
   }
 
@@ -153,18 +154,18 @@ export class BoardComponent implements OnInit {
       this.openDialog();
     } else {
       this.name = user.username;
-      this.dataService.ownUserOnline(this.boardId, user);
+      this.dataService.ownUserOnline(this.slug, user);
     }
 
-    this.dataService.getUsers(this.boardId).subscribe((activeUsers) => {
+    this.dataService.getUsers(this.slug).subscribe((activeUsers) => {
       this.users = activeUsers || {};
       this.stickyNotes.forEach((note) => {
-        this.dataService.updateStickyNote(this.boardId, note);
+        this.dataService.updateStickyNote(this.slug, note);
       });
     });
 
     this.dataService
-      .stickyNotesUpdates(this.boardId)
+      .stickyNotesUpdates(this.slug)
       .subscribe((stickyNotes: StickyNoteDbo) => {
         if (!stickyNotes) {
           return (this.stickyNotes = []);
@@ -185,13 +186,13 @@ export class BoardComponent implements OnInit {
       });
 
     this.dataService
-      .getBackgroundImage(this.boardId)
+      .getBackgroundImage(this.slug)
       .subscribe((imgSrc: string | null) => {
         this.appCanvas.backgroundImage = imgSrc || '';
       });
 
     this.dataService
-      .getRulers(this.boardId)
+      .getRulers(this.slug)
       .subscribe((rulers: Ruler[] | null) => {
         this.rulers = rulers && rulers.length ? rulers : [];
       });
@@ -219,7 +220,7 @@ export class BoardComponent implements OnInit {
     });
     bottomSheetRef.afterDismissed().subscribe((url: string) => {
       this.appCanvas.backgroundImage = url;
-      this.dataService.setBackgroundImage(this.boardId, url);
+      this.dataService.setBackgroundImage(this.slug, url);
     });
   }
 
@@ -232,7 +233,7 @@ export class BoardComponent implements OnInit {
   }
 
   updateRulers(rulers: Ruler[]) {
-    this.dataService.setRulers(this.boardId, rulers);
+    this.dataService.setRulers(this.slug, rulers);
   }
 
   exportAsImage() {
@@ -243,19 +244,19 @@ export class BoardComponent implements OnInit {
         .replace('image/png', 'image/octet-stream');
       const a = document.createElement('a');
       a.href = href;
-      a.download = `board-${this.boardId}.png`;
+      a.download = `board-${this.slug}.png`;
       a.click();
     });
   }
 
   exportAsJSON() {
-    this.dataService.getBoardData(this.boardId).subscribe((res) => {
+    this.dataService.getBoardData(this.slug).subscribe((res) => {
       const href =
         'data:text/json;charset=utf-8,' +
         encodeURIComponent(JSON.stringify(res, null, 2));
       const a = document.createElement('a');
       a.href = href;
-      a.download = `board-${this.boardId}.json`;
+      a.download = `board-${this.slug}.json`;
       a.click();
     });
   }
@@ -266,12 +267,27 @@ export class BoardComponent implements OnInit {
     fileReader.readAsText(selectedFile, 'UTF-8');
     fileReader.onload = () => {
       const boardData = JSON.parse(fileReader.result as string) as BoardData;
-      this.dataService.setBoardData(this.boardId, boardData);
+      this.dataService.setBoardData(this.slug, boardData);
     };
     fileReader.onerror = (error) => {
       // todo: open error dialog
       console.log(error);
     };
+  }
+
+  /**
+   * change the location of the board with it's data
+   */
+  changeBoardUrl() {
+    const dialogRef = this.dialog.open(BoardUrlDialogComponent, {
+      data: this.slug,
+    });
+
+    dialogRef.afterClosed().subscribe((newSlug: string) => {
+      this.router.navigate(['/', newSlug]).then(() => {
+        this.dataService.changeBoardLocation(this.slug, newSlug);
+      });
+    });
   }
 
   /**
