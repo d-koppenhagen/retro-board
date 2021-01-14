@@ -26,7 +26,7 @@ export class BoardComponent implements OnInit {
   @ViewChild('appCanvas', { static: true }) appCanvas: CanvasComponent;
   boardId: string;
   title = 'Canvas';
-  tool = '';
+  tool = 'free';
   lineWidth = 4;
   strokeColor = '#336AE1';
   fillColor = '#ffeb3b';
