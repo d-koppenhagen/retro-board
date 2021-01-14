@@ -71,6 +71,20 @@
       <ng-template #displayStored>
         <h3>{{ note.title }}</h3>
         <p>{{ note.description }}</p>
+        <button
+          class="vote-button"
+          mat-icon-button
+          aria-label="Vote"
+          (click)="voteNote()"
+        >
+          <mat-icon
+            [matBadge]="note.votes || 0"
+            matBadgePosition="below after"
+            matBadgeColor="primary"
+            matBadgeSize="small"
+            >thumb_up</mat-icon
+          >
+        </button>
       </ng-template>
     </div>
   </div>

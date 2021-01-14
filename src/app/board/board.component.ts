@@ -82,6 +82,7 @@ export class BoardComponent implements OnInit {
       backgroundColor: this.fillColor,
       editMode: true,
       rotation: this.roundHalf(this.randomBetween(-2, 2)),
+      votes: 0,
     });
   }
 

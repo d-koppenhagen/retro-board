@@ -17,6 +17,7 @@ import { MatSliderModule } from '@angular/material/slider';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatTooltipModule } from '@angular/material/tooltip';
+import { MatBadgeModule } from '@angular/material/badge';
 import { AngularFireModule } from '@angular/fire';
 import { AngularFireDatabaseModule } from '@angular/fire/database';
 
@@ -63,6 +64,7 @@ import { BoardUrlDialogComponent } from './board-url-dialog/board-url-dialog.com
     MatSnackBarModule,
     MatToolbarModule,
     MatTooltipModule,
+    MatBadgeModule,
     MatBottomSheetModule,
     FormsModule,
     ReactiveFormsModule,

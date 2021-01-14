@@ -70,4 +70,9 @@ export class StickyNoteComponent implements OnInit {
     $event.source.reset();
     this.update.emit(this.note);
   }
+
+  voteNote() {
+    this.note.votes = this.note.votes ? this.note.votes + 1 : 1;
+    this.update.emit(this.note);
+  }
 }
