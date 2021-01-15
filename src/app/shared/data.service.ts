@@ -40,11 +40,11 @@ export class DataService {
   }
 
   setOwnUser(user: OwnUser) {
-    sessionStorage.setItem('user', JSON.stringify(user));
+    localStorage.setItem('user', JSON.stringify(user));
   }
 
   getOwnUser(): OwnUser | null {
-    return JSON.parse(sessionStorage.getItem('user'));
+    return JSON.parse(localStorage.getItem('user'));
   }
 
   ownUserOnline(slug: string, user: OwnUser): void {
