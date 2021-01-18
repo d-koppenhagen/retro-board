@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.0.6](https://github.com/d-koppenhagen/retro-board/compare/v0.0.5...v0.0.6) (2021-01-18)
+
+
+### Features
+
+* add basic chat ([af95c07](https://github.com/d-koppenhagen/retro-board/commit/af95c07f8eeae27311622ea55b726bd6764e4d2b))
+
 ### [0.0.5](https://github.com/d-koppenhagen/retro-board/compare/v0.0.4...v0.0.5) (2021-01-14)
 
 
