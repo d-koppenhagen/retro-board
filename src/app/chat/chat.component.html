@@ -1,0 +1,31 @@
+<div class="mat-body chat-messages-container">
+  <ul class="chat-messages">
+    <li
+      *ngFor="let m of messages$ | async"
+      [ngClass]="isOwnMessage(m.userId) ? 'own-message' : 'users-message'"
+    >
+      <span class="text">{{ m.message }}</span>
+    </li>
+  </ul>
+  <div class="message-box">
+    <mat-divider></mat-divider>
+    <form>
+      <mat-form-field>
+        <textarea
+          matInput
+          placeholder="Enter your message"
+          rows="3"
+          #messageInput
+        ></textarea>
+      </mat-form-field>
+      <button
+        mat-fab
+        color="primary"
+        aria-label="Send"
+        (click)="sendMessage(messageInput.value)"
+      >
+        <mat-icon>send</mat-icon>
+      </button>
+    </form>
+  </div>
+</div>

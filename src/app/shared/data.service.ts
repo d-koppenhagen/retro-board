@@ -1,10 +1,11 @@
 import { Injectable } from '@angular/core';
 import { AngularFireDatabase } from '@angular/fire/database';
 import { Observable } from 'rxjs';
-import { take } from 'rxjs/operators';
+import { map, take } from 'rxjs/operators';
 import { v4 as uuidv4 } from 'uuid';
 import { ActiveUsers, OwnUser } from './active-users';
 import { BoardData } from './board-data';
+import { ChatMessage } from './chat-message';
 import { Ruler } from './ruler';
 import { Shape, ShapeDbo } from './shape';
 import { StickyNote, StickyNoteDbo } from './sticky-note';
@@ -97,5 +98,20 @@ export class DataService {
   setBoardData(slug: string, boardData: BoardData): Promise<void> {
     // store result without users
     return this.db.object(slug).set({ ...boardData, users: {} });
+  }
+
+  getChatMessages(slug: string) {
+    return this.db.list<ChatMessage>(`${slug}/messages`).valueChanges();
+  }
+
+  sendChatMessage(slug: string, message: string): void {
+    const user = this.getOwnUser();
+    const chatMessage: ChatMessage = {
+      userId: user.uuid,
+      userName: user.username,
+      date: new Date(),
+      message,
+    };
+    this.db.list(`${slug}/messages`).push(chatMessage);
   }
 }

@@ -1,183 +1,206 @@
-<mat-toolbar>
-  <mat-toolbar-row fxLayoutAlign="space-between center">
-    <div class="logo-container" fxLayout="row" fxLayoutAlign="start center">
-      <mat-icon class="logo">gesture</mat-icon>
-      <div>Retro Board</div>
-    </div>
-    <div fxLayout="row">
-      <a
-        mat-icon-button
-        aria-label="Jump to the GitHub project"
-        href="https://github.com/d-koppenhagen/retro-board"
-      >
-        <mat-icon
-          svgIcon="github"
-          aria-hidden="false"
-          aria-label="GitHub icon"
-        ></mat-icon>
-      </a>
-      <button
-        mat-raised-button
-        color="accent"
-        [matMenuTriggerFor]="menu"
-        *ngIf="name"
-      >
-        {{ name }}
-      </button>
-      <mat-menu #menu="matMenu" overlapTrigger="false">
-        <button mat-menu-item (click)="logout()">Logout</button>
-      </mat-menu>
-    </div>
-  </mat-toolbar-row>
-  <mat-toolbar-row class="hAuto toolbar">
-    <button
-      mat-icon-button
-      matTooltip="Export Data"
-      [matMenuTriggerFor]="exportMenu"
-    >
-      <mat-icon class="toolbar-icon">menu</mat-icon>
-    </button>
-    <mat-menu #exportMenu="matMenu">
-      <button mat-menu-item (click)="changeBoardUrl()">Change board URL</button>
-      <button mat-menu-item (click)="exportAsImage()">Export as Image</button>
-      <button mat-menu-item (click)="exportAsJSON()">Export as JSON</button>
-      <input
-        #jsonInput
-        hidden="true"
-        type="file"
-        onclick="this.value=null"
-        (change)="importAsJSON($event)"
-        accept=".json"
-      />
-      <button mat-menu-item (click)="jsonInput.click()">
-        Import from JSON File
-      </button>
-    </mat-menu>
-    <div class="toolbar-separator"></div>
-    <button mat-icon-button matTooltip="Sticky Note" (click)="addNote()">
-      <mat-icon class="toolbar-icon">sticky_note_2</mat-icon>
-    </button>
-    <div class="toolbar-separator"></div>
-    <button
-      mat-icon-button
-      matTooltip="Draw"
-      [color]="tool === 'free' ? 'accent' : ''"
-      (click)="tool = 'free'"
-    >
-      <mat-icon class="toolbar-icon">create</mat-icon>
-    </button>
-    <button
-      mat-icon-button
-      matTooltip="Line"
-      [color]="tool === 'line' ? 'accent' : ''"
-      (click)="tool = 'line'"
-    >
-      <mat-icon class="toolbar-icon">show_chart</mat-icon>
-    </button>
-    <button
-      mat-icon-button
-      matTooltip="Circle"
-      [color]="tool === 'circle' ? 'accent' : ''"
-      (click)="tool = 'circle'"
-    >
-      <mat-icon class="toolbar-icon">radio_button_unchecked</mat-icon>
-    </button>
-    <button
-      mat-icon-button
-      matTooltip="Rectangle"
-      [color]="tool === 'rectangle' ? 'accent' : ''"
-      (click)="tool = 'rectangle'"
-    >
-      <mat-icon class="toolbar-icon">check_box_outline_blank</mat-icon>
-    </button>
-    <div class="toolbar-separator"></div>
-    <button
-      mat-icon-button
-      matTooltip="Stroke Color"
-      [style.color]="strokeColor === 'transparent' ? '#00000030' : strokeColor"
-      [class]="{ inactive: strokeColor === 'transparent' }"
-      (click)="nextStrokeColor()"
-    >
-      <mat-icon class="toolbar-icon">border_color</mat-icon>
-    </button>
-    <button
-      mat-icon-button
-      matTooltip="Fill Color"
-      [style.color]="fillColor === 'transparent' ? '#00000030' : fillColor"
-      [class]="{ inactive: fillColor === 'transparent' }"
-      (click)="nextFillColor()"
-    >
-      <mat-icon class="toolbar-icon">format_color_fill</mat-icon>
-    </button>
-    <div class="toolbar-separator"></div>
-    <button mat-icon-button matTooltip="Clear Canvas" (click)="clearAll()">
-      <mat-icon class="toolbar-icon">layers_clear</mat-icon>
-    </button>
-    <div class="toolbar-separator"></div>
-    <button
-      mat-icon-button
-      matTooltip="Add an horizontal ruler"
-      (click)="addRuler('horizontal')"
-    >
-      <mat-icon class="toolbar-icon">border_horizontal</mat-icon>
-    </button>
-    <button
-      mat-icon-button
-      matTooltip="Add a vertical ruler"
-      (click)="addRuler('vertical')"
-    >
-      <mat-icon class="toolbar-icon">border_vertical</mat-icon>
-    </button>
-    <button
-      mat-icon-button
-      matTooltip="Select background for Canvas"
-      (click)="openBottomSheet()"
-    >
-      <mat-icon class="toolbar-icon">image</mat-icon>
-    </button>
-    <div class="toolbar-separator"></div>
-    <mat-icon class="toolbar-icon" matTooltip="Stroke Width"
-      >border_outer</mat-icon
-    >
-    <mat-slider
-      [(ngModel)]="lineWidth"
-      [min]="1"
-      [max]="100"
-      [step]="1"
-    ></mat-slider>
-    <div class="ml15 mr5">{{ lineWidth }}</div>
-    <div class="toolbar-separator"></div>
-    <div class="ml15">Online:</div>
-    <div class="ml15" fxLayout="row">
-      <div
-        class="users mr5"
-        fxLayoutAlign="center center"
-        [style.background]="availableColors[random]"
-        [matTooltip]="users[key]"
-        *ngFor="let key of objectKeys(users)"
-      >
-        <div>{{ users[key]?.substr(0, 1) }}</div>
-      </div>
-    </div>
-  </mat-toolbar-row>
-</mat-toolbar>
-<mat-card id="mat-card-content">
-  <app-canvas
-    [width]="400"
-    [height]="400"
-    [tool]="tool"
-    [strokeColor]="strokeColor"
-    [fillColor]="fillColor"
-    [lineWidth]="lineWidth"
-    [rulers]="rulers"
-    (updateRulers)="updateRulers($event)"
-    #appCanvas
-  ></app-canvas>
-  <app-sticky-note
-    class="sticky-note"
-    *ngFor="let note of stickyNotes"
-    [note]="note"
-    (update)="updateNote($event)"
-    (remove)="removeNote($event)"
-  ></app-sticky-note>
-</mat-card>
+<mat-drawer-container class="sidenav-container" autosize>
+  <mat-drawer #drawer class="sidenav-drawer" mode="side" position="end">
+    <app-chat></app-chat>
+  </mat-drawer>
+
+  <div class="sidenav-content">
+    <mat-toolbar>
+      <mat-toolbar-row fxLayoutAlign="space-between center">
+        <div class="logo-container" fxLayout="row" fxLayoutAlign="start center">
+          <mat-icon class="logo">gesture</mat-icon>
+          <div>Retro Board</div>
+        </div>
+        <div fxLayout="row">
+          <a
+            mat-icon-button
+            aria-label="Jump to the GitHub project"
+            href="https://github.com/d-koppenhagen/retro-board"
+          >
+            <mat-icon
+              svgIcon="github"
+              aria-hidden="false"
+              aria-label="GitHub icon"
+            ></mat-icon>
+          </a>
+          <button
+            mat-raised-button
+            color="accent"
+            [matMenuTriggerFor]="menu"
+            *ngIf="name"
+          >
+            {{ name }}
+          </button>
+          <mat-menu #menu="matMenu" overlapTrigger="false">
+            <button mat-menu-item (click)="logout()">Logout</button>
+          </mat-menu>
+        </div>
+      </mat-toolbar-row>
+      <mat-toolbar-row class="hAuto toolbar">
+        <button
+          mat-icon-button
+          matTooltip="Export Data"
+          [matMenuTriggerFor]="exportMenu"
+        >
+          <mat-icon class="toolbar-icon">menu</mat-icon>
+        </button>
+        <mat-menu #exportMenu="matMenu">
+          <button mat-menu-item (click)="changeBoardUrl()">
+            Change board URL
+          </button>
+          <button mat-menu-item (click)="exportAsImage()">
+            Export as Image
+          </button>
+          <button mat-menu-item (click)="exportAsJSON()">Export as JSON</button>
+          <input
+            #jsonInput
+            hidden="true"
+            type="file"
+            onclick="this.value=null"
+            (change)="importAsJSON($event)"
+            accept=".json"
+          />
+          <button mat-menu-item (click)="jsonInput.click()">
+            Import from JSON File
+          </button>
+        </mat-menu>
+        <div class="toolbar-separator"></div>
+        <button mat-icon-button matTooltip="Sticky Note" (click)="addNote()">
+          <mat-icon class="toolbar-icon">sticky_note_2</mat-icon>
+        </button>
+        <div class="toolbar-separator"></div>
+        <button
+          mat-icon-button
+          matTooltip="Draw"
+          [color]="tool === 'free' ? 'accent' : ''"
+          (click)="tool = 'free'"
+        >
+          <mat-icon class="toolbar-icon">create</mat-icon>
+        </button>
+        <button
+          mat-icon-button
+          matTooltip="Line"
+          [color]="tool === 'line' ? 'accent' : ''"
+          (click)="tool = 'line'"
+        >
+          <mat-icon class="toolbar-icon">show_chart</mat-icon>
+        </button>
+        <button
+          mat-icon-button
+          matTooltip="Circle"
+          [color]="tool === 'circle' ? 'accent' : ''"
+          (click)="tool = 'circle'"
+        >
+          <mat-icon class="toolbar-icon">radio_button_unchecked</mat-icon>
+        </button>
+        <button
+          mat-icon-button
+          matTooltip="Rectangle"
+          [color]="tool === 'rectangle' ? 'accent' : ''"
+          (click)="tool = 'rectangle'"
+        >
+          <mat-icon class="toolbar-icon">check_box_outline_blank</mat-icon>
+        </button>
+        <div class="toolbar-separator"></div>
+        <button
+          mat-icon-button
+          matTooltip="Stroke Color"
+          [style.color]="
+            strokeColor === 'transparent' ? '#00000030' : strokeColor
+          "
+          [class]="{ inactive: strokeColor === 'transparent' }"
+          (click)="nextStrokeColor()"
+        >
+          <mat-icon class="toolbar-icon">border_color</mat-icon>
+        </button>
+        <button
+          mat-icon-button
+          matTooltip="Fill Color"
+          [style.color]="fillColor === 'transparent' ? '#00000030' : fillColor"
+          [class]="{ inactive: fillColor === 'transparent' }"
+          (click)="nextFillColor()"
+        >
+          <mat-icon class="toolbar-icon">format_color_fill</mat-icon>
+        </button>
+        <div class="toolbar-separator"></div>
+        <button mat-icon-button matTooltip="Clear Canvas" (click)="clearAll()">
+          <mat-icon class="toolbar-icon">layers_clear</mat-icon>
+        </button>
+        <div class="toolbar-separator"></div>
+        <button
+          mat-icon-button
+          matTooltip="Add an horizontal ruler"
+          (click)="addRuler('horizontal')"
+        >
+          <mat-icon class="toolbar-icon">border_horizontal</mat-icon>
+        </button>
+        <button
+          mat-icon-button
+          matTooltip="Add a vertical ruler"
+          (click)="addRuler('vertical')"
+        >
+          <mat-icon class="toolbar-icon">border_vertical</mat-icon>
+        </button>
+        <button
+          mat-icon-button
+          matTooltip="Select background for Canvas"
+          (click)="openBottomSheet()"
+        >
+          <mat-icon class="toolbar-icon">wallpaper</mat-icon>
+        </button>
+        <div class="toolbar-separator"></div>
+        <mat-icon class="toolbar-icon" matTooltip="Stroke Width"
+          >border_outer</mat-icon
+        >
+        <mat-slider
+          [(ngModel)]="lineWidth"
+          [min]="1"
+          [max]="100"
+          [step]="1"
+        ></mat-slider>
+        <div class="ml15 mr5">{{ lineWidth }}</div>
+        <div class="toolbar-separator"></div>
+        <span class="spacer"></span>
+
+        <div class="ml15">Online:</div>
+        <div class="ml15" fxLayout="row">
+          <div
+            class="users mr5"
+            fxLayoutAlign="center center"
+            [style.background]="availableColors[random]"
+            [matTooltip]="users[key]"
+            *ngFor="let key of objectKeys(users)"
+          >
+            <div>{{ users[key]?.substr(0, 1) }}</div>
+          </div>
+        </div>
+        <button
+          mat-icon-button
+          matTooltip="Open Chat"
+          (click)="drawer.toggle()"
+        >
+          <mat-icon class="toolbar-icon">chat_bubble_outline</mat-icon>
+        </button>
+      </mat-toolbar-row>
+    </mat-toolbar>
+    <mat-card id="mat-card-content">
+      <app-canvas
+        [width]="400"
+        [height]="400"
+        [tool]="tool"
+        [strokeColor]="strokeColor"
+        [fillColor]="fillColor"
+        [lineWidth]="lineWidth"
+        [rulers]="rulers"
+        (updateRulers)="updateRulers($event)"
+        #appCanvas
+      ></app-canvas>
+      <app-sticky-note
+        class="sticky-note"
+        *ngFor="let note of stickyNotes"
+        [note]="note"
+        (update)="updateNote($event)"
+        (remove)="removeNote($event)"
+      ></app-sticky-note>
+    </mat-card>
+  </div>
+</mat-drawer-container>

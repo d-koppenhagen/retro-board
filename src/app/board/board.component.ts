@@ -25,6 +25,7 @@ import { BoardUrlDialogComponent } from '../board-url-dialog/board-url-dialog.co
 })
 export class BoardComponent implements OnInit {
   @ViewChild('appCanvas', { static: true }) appCanvas: CanvasComponent;
+  showChat = false;
   slug: string;
   title = 'Canvas';
   tool = 'free';

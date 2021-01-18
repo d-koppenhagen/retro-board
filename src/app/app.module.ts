@@ -18,6 +18,7 @@ import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatBadgeModule } from '@angular/material/badge';
+import { MatSidenavModule } from '@angular/material/sidenav';
 import { AngularFireModule } from '@angular/fire';
 import { AngularFireDatabaseModule } from '@angular/fire/database';
 
@@ -34,6 +35,7 @@ import { HttpClientModule } from '@angular/common/http';
 import { ClearBoardDialogComponent } from './clear-board-dialog/clear-board-dialog.component';
 import { RulerComponent } from './ruler/ruler.component';
 import { BoardUrlDialogComponent } from './board-url-dialog/board-url-dialog.component';
+import { ChatComponent } from './chat/chat.component';
 
 @NgModule({
   declarations: [
@@ -46,6 +48,7 @@ import { BoardUrlDialogComponent } from './board-url-dialog/board-url-dialog.com
     ClearBoardDialogComponent,
     RulerComponent,
     BoardUrlDialogComponent,
+    ChatComponent,
   ],
   imports: [
     BrowserModule,
@@ -66,6 +69,7 @@ import { BoardUrlDialogComponent } from './board-url-dialog/board-url-dialog.com
     MatTooltipModule,
     MatBadgeModule,
     MatBottomSheetModule,
+    MatSidenavModule,
     FormsModule,
     ReactiveFormsModule,
     DragDropModule,
