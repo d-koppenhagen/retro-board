@@ -1,5 +1,5 @@
 <div class="mat-body chat-messages-container">
-  <ul class="chat-messages">
+  <ul class="chat-messages" #chatMessagesContainer>
     <li
       *ngFor="let m of messages$ | async"
       [ngClass]="isOwnMessage(m.userId) ? 'own-message' : 'users-message'"
@@ -22,7 +22,7 @@
         mat-fab
         color="primary"
         aria-label="Send"
-        (click)="sendMessage(messageInput.value)"
+        (click)="sendMessage(messageInput.value); messageInput.value = ''"
       >
         <mat-icon>send</mat-icon>
       </button>
