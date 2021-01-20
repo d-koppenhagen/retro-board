@@ -4,7 +4,17 @@
       *ngFor="let m of messages$ | async"
       [ngClass]="isOwnMessage(m.userId) ? 'own-message' : 'users-message'"
     >
-      <span class="text">{{ m.message }}</span>
+      <span
+        class="text"
+        [matBadge]="m.userName?.substr(0, 1)"
+        matBadgeOverlap="true"
+        [matTooltip]="m.userName"
+        [matTooltipPosition]="isOwnMessage(m.userId) ? 'left' : 'right'"
+        [matBadgePosition]="
+          isOwnMessage(m.userId) ? 'above after' : 'above before'
+        "
+        >{{ m.message }}</span
+      >
     </li>
   </ul>
   <div class="message-box">
