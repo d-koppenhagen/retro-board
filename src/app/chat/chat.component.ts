@@ -43,8 +43,11 @@ export class ChatComponent implements OnInit, AfterViewChecked {
     } catch (err) {}
   }
 
-  sendMessage(message: string) {
-    this.dataService.sendChatMessage(this.slug, message);
+  sendMessage(messageInput: HTMLInputElement) {
+    if (messageInput.value && messageInput.value.trim() !== '') {
+      this.dataService.sendChatMessage(this.slug, messageInput.value);
+      messageInput.value = '';
+    }
   }
 
   isOwnMessage(uuid: string) {

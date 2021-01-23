@@ -32,7 +32,8 @@
         mat-fab
         color="primary"
         aria-label="Send"
-        (click)="sendMessage(messageInput.value); messageInput.value = ''"
+        [disabled]="!messageInput.value"
+        (click)="sendMessage(messageInput)"
       >
         <mat-icon>send</mat-icon>
       </button>
