@@ -9,7 +9,8 @@ import { ActivatedRoute } from '@angular/router';
 import { Observable } from 'rxjs';
 
 import { ChatMessage } from '../shared/chat-message';
-import { DataService } from '../shared/data.service';
+import { ChatService } from '../shared/chat.service';
+import { UserService } from '../shared/user.service';
 
 @Component({
   selector: 'app-chat',
@@ -24,12 +25,13 @@ export class ChatComponent implements OnInit, AfterViewChecked {
 
   constructor(
     private route: ActivatedRoute,
-    private dataService: DataService
+    private chatService: ChatService,
+    private userService: UserService
   ) {}
 
   ngOnInit(): void {
     this.slug = this.route.snapshot.paramMap.get('slug');
-    this.messages$ = this.dataService.getChatMessages(this.slug);
+    this.messages$ = this.chatService.getChatMessages(this.slug);
     this.scrollToBottom();
   }
 
@@ -45,12 +47,12 @@ export class ChatComponent implements OnInit, AfterViewChecked {
 
   sendMessage(messageInput: HTMLInputElement) {
     if (messageInput.value && messageInput.value.trim() !== '') {
-      this.dataService.sendChatMessage(this.slug, messageInput.value);
+      this.chatService.sendChatMessage(this.slug, messageInput.value);
       messageInput.value = '';
     }
   }
 
   isOwnMessage(uuid: string) {
-    return this.dataService.getOwnUser().uuid === uuid;
+    return this.userService.getOwnUser().uuid === uuid;
   }
 }

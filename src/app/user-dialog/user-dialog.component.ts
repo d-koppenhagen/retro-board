@@ -3,8 +3,7 @@ import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { v4 as uuidv4 } from 'uuid';
 
 import { OwnUser } from '../shared/active-users';
-import { DataService } from '../shared/data.service';
-
+import { UserService } from '../shared/user.service';
 @Component({
   selector: 'app-user-dialog',
   templateUrl: './user-dialog.component.html',
@@ -16,7 +15,7 @@ export class UserDialogComponent {
   constructor(
     public dialogRef: MatDialogRef<UserDialogComponent>,
     @Inject(MAT_DIALOG_DATA) public data: any,
-    private dataService: DataService
+    private userService: UserService
   ) {}
 
   addUser() {
@@ -25,7 +24,7 @@ export class UserDialogComponent {
         username: this.name,
         uuid: uuidv4(),
       };
-      this.dataService.setOwnUser(user);
+      this.userService.setOwnUser(user);
       this.dialogRef.close(user);
     }
   }

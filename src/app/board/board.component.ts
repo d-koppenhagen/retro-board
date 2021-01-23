@@ -8,7 +8,6 @@ import { MatIconRegistry } from '@angular/material/icon';
 import { UserDialogComponent } from '../user-dialog/user-dialog.component';
 import { CanvasComponent } from '../canvas/canvas.component';
 import { StickyNote, StickyNoteDbo } from '../shared/sticky-note';
-import { DataService } from '../shared/data.service';
 import { BackgroundSelectComponent } from '../background-select/background-select.component';
 import { ActivatedRoute, Router } from '@angular/router';
 import { OwnUser } from '../shared/active-users';
@@ -17,6 +16,11 @@ import { Ruler } from '../shared/ruler';
 import html2canvas from 'html2canvas';
 import { BoardData } from '../shared/board-data';
 import { BoardUrlDialogComponent } from '../board-url-dialog/board-url-dialog.component';
+import { UserService } from '../shared/user.service';
+import { StickyNotesService } from '../shared/sticky-notes.service';
+import { CanvasService } from '../shared/canvas.service';
+import { BoardService } from '../shared/board.service';
+import { RulerService } from '../shared/ruler.service';
 
 @Component({
   selector: 'app-board',
@@ -56,7 +60,11 @@ export class BoardComponent implements OnInit {
 
   constructor(
     public dialog: MatDialog,
-    private dataService: DataService,
+    private boardService: BoardService,
+    private userService: UserService,
+    private rulerService: RulerService,
+    private stickyNotesService: StickyNotesService,
+    private canvasService: CanvasService,
     private bottomSheet: MatBottomSheet,
     private route: ActivatedRoute,
     private router: Router,
@@ -104,7 +112,7 @@ export class BoardComponent implements OnInit {
       (note) => note.uuid === stickyNote.uuid
     );
     this.stickyNotes[matchIndex] = stickyNote;
-    this.dataService.updateStickyNote(this.slug, stickyNote);
+    this.stickyNotesService.updateStickyNote(this.slug, stickyNote);
     // this.dataService.updateNotes(this.stickyNotes);
   }
 
@@ -119,14 +127,14 @@ export class BoardComponent implements OnInit {
 
     dialogRef.afterClosed().subscribe((user: OwnUser) => {
       this.name = user.username;
-      this.dataService.ownUserOnline(this.slug, user);
+      this.userService.ownUserOnline(this.slug, user);
     });
   }
 
   // Method to logout
   logout() {
     this.name = '';
-    this.dataService.logout(this.slug, this.dataService.getOwnUser());
+    this.userService.logout(this.slug);
     this.openDialog();
   }
 
@@ -137,7 +145,7 @@ export class BoardComponent implements OnInit {
 
     dialogRef.afterClosed().subscribe((doClear: boolean) => {
       if (doClear) {
-        this.dataService.clearAll(this.slug).then(() => {
+        this.boardService.clearAll(this.slug).then(() => {
           location.reload();
         });
       }
@@ -151,22 +159,22 @@ export class BoardComponent implements OnInit {
   }
 
   initBoard(): void {
-    const user = this.dataService.getOwnUser();
+    const user = this.userService.getOwnUser();
     if (!user) {
       this.openDialog();
     } else {
       this.name = user.username;
-      this.dataService.ownUserOnline(this.slug, user);
+      this.userService.ownUserOnline(this.slug, user);
     }
 
-    this.dataService.getUsers(this.slug).subscribe((activeUsers) => {
+    this.userService.getUsers(this.slug).subscribe((activeUsers) => {
       this.users = activeUsers || {};
       this.stickyNotes.forEach((note) => {
-        this.dataService.updateStickyNote(this.slug, note);
+        this.stickyNotesService.updateStickyNote(this.slug, note);
       });
     });
 
-    this.dataService
+    this.stickyNotesService
       .stickyNotesUpdates(this.slug)
       .subscribe((stickyNotes: StickyNoteDbo) => {
         if (!stickyNotes) {
@@ -187,13 +195,13 @@ export class BoardComponent implements OnInit {
         }
       });
 
-    this.dataService
+    this.boardService
       .getBackgroundImage(this.slug)
       .subscribe((imgSrc: string | null) => {
         this.appCanvas.backgroundImage = imgSrc || '';
       });
 
-    this.dataService
+    this.rulerService
       .getRulers(this.slug)
       .subscribe((rulers: Ruler[] | null) => {
         this.rulers = rulers && rulers.length ? rulers : [];
@@ -222,7 +230,7 @@ export class BoardComponent implements OnInit {
     });
     bottomSheetRef.afterDismissed().subscribe((url: string) => {
       this.appCanvas.backgroundImage = url;
-      this.dataService.setBackgroundImage(this.slug, url);
+      this.boardService.setBackgroundImage(this.slug, url);
     });
   }
 
@@ -235,7 +243,7 @@ export class BoardComponent implements OnInit {
   }
 
   updateRulers(rulers: Ruler[]) {
-    this.dataService.setRulers(this.slug, rulers);
+    this.rulerService.setRulers(this.slug, rulers);
   }
 
   exportAsImage() {
@@ -252,7 +260,7 @@ export class BoardComponent implements OnInit {
   }
 
   exportAsJSON() {
-    this.dataService.getBoardData(this.slug).subscribe((res) => {
+    this.boardService.getBoardData(this.slug).subscribe((res) => {
       const href =
         'data:text/json;charset=utf-8,' +
         encodeURIComponent(JSON.stringify(res, null, 2));
@@ -269,7 +277,7 @@ export class BoardComponent implements OnInit {
     fileReader.readAsText(selectedFile, 'UTF-8');
     fileReader.onload = () => {
       const boardData = JSON.parse(fileReader.result as string) as BoardData;
-      this.dataService.setBoardData(this.slug, boardData);
+      this.boardService.setBoardData(this.slug, boardData);
     };
     fileReader.onerror = (error) => {
       // todo: open error dialog
@@ -287,7 +295,7 @@ export class BoardComponent implements OnInit {
 
     dialogRef.afterClosed().subscribe((newSlug: string) => {
       this.router.navigate(['/', newSlug]).then(() => {
-        this.dataService.changeBoardLocation(this.slug, newSlug);
+        this.boardService.changeBoardLocation(this.slug, newSlug);
       });
     });
   }

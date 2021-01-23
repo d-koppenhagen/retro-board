@@ -10,7 +10,6 @@ import {
   Output,
 } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { DataService } from '../shared/data.service';
 import {
   DragPosition,
   Shape,
@@ -22,6 +21,7 @@ import {
   Line,
 } from '../shared/shape';
 import { Ruler } from '../shared/ruler';
+import { CanvasService } from '../shared/canvas.service';
 
 @Component({
   selector: 'app-canvas',
@@ -56,7 +56,7 @@ export class CanvasComponent implements OnInit, AfterViewInit {
   private internalData: Partial<Shape>;
 
   constructor(
-    private dataService: DataService,
+    private canvasService: CanvasService,
     private route: ActivatedRoute
   ) {}
 
@@ -75,45 +75,47 @@ export class CanvasComponent implements OnInit, AfterViewInit {
   public ngAfterViewInit() {
     this.init();
 
-    this.dataService.canvasUpdates(this.slug).subscribe((shapes: ShapeDbo) => {
-      if (shapes) {
-        for (const [key, value] of Object.entries(shapes)) {
-          // use remote update shape style
-          this.context.strokeStyle = value.strokeColor;
-          this.context.fillStyle = value.fillColor;
-          this.context.lineWidth = value.lineWidth;
+    this.canvasService
+      .canvasUpdates(this.slug)
+      .subscribe((shapes: ShapeDbo) => {
+        if (shapes) {
+          for (const [key, value] of Object.entries(shapes)) {
+            // use remote update shape style
+            this.context.strokeStyle = value.strokeColor;
+            this.context.fillStyle = value.fillColor;
+            this.context.lineWidth = value.lineWidth;
 
-          // paint the shape
-          switch (value.type) {
-            case 'free':
-              const freeShape = value.shape as Free;
-              this.drawFree({ points: freeShape.points, closed: false });
-              break;
-            case 'free_closed':
-              const freeCloseShape = value.shape as Free;
-              this.drawFree({ points: freeCloseShape.points, closed: true });
-              break;
-            case 'rectangle':
-              const rectangleShape = value.shape as Rectangle;
-              this.drawRectangle(rectangleShape);
-              break;
-            case 'circle':
-              const circleShape = value.shape as Rectangle;
-              this.drawCircle(circleShape);
-              break;
-            case 'line':
-              const lineShape = value.shape as Rectangle;
-              this.drawLine(lineShape);
-              break;
-            default:
-              break;
+            // paint the shape
+            switch (value.type) {
+              case 'free':
+                const freeShape = value.shape as Free;
+                this.drawFree({ points: freeShape.points, closed: false });
+                break;
+              case 'free_closed':
+                const freeCloseShape = value.shape as Free;
+                this.drawFree({ points: freeCloseShape.points, closed: true });
+                break;
+              case 'rectangle':
+                const rectangleShape = value.shape as Rectangle;
+                this.drawRectangle(rectangleShape);
+                break;
+              case 'circle':
+                const circleShape = value.shape as Rectangle;
+                this.drawCircle(circleShape);
+                break;
+              case 'line':
+                const lineShape = value.shape as Rectangle;
+                this.drawLine(lineShape);
+                break;
+              default:
+                break;
+            }
+
+            // reset shape style after remote updates has been painted
+            this.setShapeStyle();
           }
-
-          // reset shape style after remote updates has been painted
-          this.setShapeStyle();
         }
-      }
-    });
+      });
   }
 
   /**
@@ -273,7 +275,7 @@ export class CanvasComponent implements OnInit, AfterViewInit {
     this.dragging = false;
 
     // write data to firebase
-    this.dataService.draw(this.slug, data);
+    this.canvasService.draw(this.slug, data);
   }
 
   /**
