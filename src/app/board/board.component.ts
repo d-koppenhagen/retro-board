@@ -28,7 +28,7 @@ import { RulerService } from '../shared/ruler.service';
   styleUrls: ['./board.component.scss'],
 })
 export class BoardComponent implements OnInit {
-  @ViewChild('appCanvas', { static: true }) appCanvas: CanvasComponent;
+  backgroundImage: string;
   showChat = false;
   slug: string;
   title = 'Canvas';
@@ -198,7 +198,7 @@ export class BoardComponent implements OnInit {
     this.boardService
       .getBackgroundImage(this.slug)
       .subscribe((imgSrc: string | null) => {
-        this.appCanvas.backgroundImage = imgSrc || '';
+        this.backgroundImage = imgSrc || '';
       });
 
     this.rulerService
@@ -226,10 +226,10 @@ export class BoardComponent implements OnInit {
 
   openBottomSheet() {
     const bottomSheetRef = this.bottomSheet.open(BackgroundSelectComponent, {
-      data: { url: this.appCanvas.backgroundImage },
+      data: { url: this.backgroundImage },
     });
     bottomSheetRef.afterDismissed().subscribe((url: string) => {
-      this.appCanvas.backgroundImage = url;
+      this.backgroundImage = url;
       this.boardService.setBackgroundImage(this.slug, url);
     });
   }
