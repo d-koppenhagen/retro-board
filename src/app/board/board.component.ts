@@ -3,7 +3,7 @@ import { Component, OnInit, ViewChild } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { MatBottomSheet } from '@angular/material/bottom-sheet';
 import { DomSanitizer } from '@angular/platform-browser';
-import { MatIconRegistry } from '@angular/material/icon';
+import { IconOptions, MatIconRegistry } from '@angular/material/icon';
 
 import { UserDialogComponent } from '../user-dialog/user-dialog.component';
 import { CanvasComponent } from '../canvas/canvas.component';
@@ -74,6 +74,16 @@ export class BoardComponent implements OnInit {
     iconRegistry.addSvgIcon(
       'github',
       sanitizer.bypassSecurityTrustResourceUrl('assets/icons/github.svg')
+    );
+    iconRegistry.addSvgIcon(
+      'free_hand',
+      sanitizer.bypassSecurityTrustResourceUrl('assets/icons/free-hand.svg')
+    );
+    iconRegistry.addSvgIcon(
+      'free_hand_closed',
+      sanitizer.bypassSecurityTrustResourceUrl(
+        'assets/icons/free-hand-closed.svg'
+      )
     );
   }
 

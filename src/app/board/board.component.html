@@ -70,12 +70,31 @@
         <div class="toolbar-separator"></div>
         <button
           mat-icon-button
-          matTooltip="Draw"
+          matTooltip="Draw free"
           [color]="tool === 'free' ? 'accent' : ''"
           (click)="tool = 'free'"
         >
-          <mat-icon class="toolbar-icon">create</mat-icon>
+          <mat-icon
+            svgIcon="free_hand"
+            class="toolbar-icon"
+            aria-hidden="false"
+            aria-label="free hand icon"
+          ></mat-icon>
         </button>
+        <button
+          mat-icon-button
+          matTooltip="Draw free and close path"
+          [color]="tool === 'free_closed' ? 'accent' : ''"
+          (click)="tool = 'free_closed'"
+        >
+          <mat-icon
+            svgIcon="free_hand_closed"
+            class="toolbar-icon"
+            aria-hidden="false"
+            aria-label="free hand closed path icon"
+          ></mat-icon>
+        </button>
+
         <button
           mat-icon-button
           matTooltip="Line"
