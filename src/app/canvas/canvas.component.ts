@@ -116,6 +116,7 @@ export class CanvasComponent implements OnInit, AfterViewInit {
 
             // reset shape style after remote updates has been painted
             this.setShapeStyle();
+            this.context.globalCompositeOperation = 'destination-over';
           }
         }
       });
@@ -186,6 +187,7 @@ export class CanvasComponent implements OnInit, AfterViewInit {
   drawFreeClose() {
     this.context.closePath();
     this.context.stroke();
+    this.context.fill();
   }
 
   /**
@@ -217,6 +219,7 @@ export class CanvasComponent implements OnInit, AfterViewInit {
    */
   dragStart(event: MouseEvent) {
     this.setShapeStyle();
+    this.context.globalCompositeOperation = 'source-over';
     if (!this.tool) {
       return;
     }
@@ -310,6 +313,7 @@ export class CanvasComponent implements OnInit, AfterViewInit {
     this.context.fillStyle = this.fillColor;
     this.context.lineWidth = this.lineWidth;
     this.context.lineCap = 'round';
+    this.context.globalCompositeOperation = 'source-over';
   }
 
   /**
