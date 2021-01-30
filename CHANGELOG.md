@@ -2,6 +2,22 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.0.7](https://github.com/d-koppenhagen/retro-board/compare/v0.0.6...v0.0.7) (2021-01-30)
+
+
+### Features
+
+* add free closed shape ([c7fcdf5](https://github.com/d-koppenhagen/retro-board/commit/c7fcdf539af9396580d20c457f4abe20169ce325))
+* **chat:** add names ([53afc45](https://github.com/d-koppenhagen/retro-board/commit/53afc453b1f5bd6c6797fdd879d72ebfd3f73fad))
+* clear message and scroll after sent ([1333801](https://github.com/d-koppenhagen/retro-board/commit/1333801e350f324170ded1cc64e91ff69d66a46b))
+
+
+### Bug Fixes
+
+* fill free close shape ([6e0e29d](https://github.com/d-koppenhagen/retro-board/commit/6e0e29d12c6369fb50ebb2493bb782c5f2deb3ff))
+* only send message when it's not empty ([6befc65](https://github.com/d-koppenhagen/retro-board/commit/6befc65d610d4fa672aee60cd54b223e9a659de9))
+* show free hand path immeadiately ([b7cb273](https://github.com/d-koppenhagen/retro-board/commit/b7cb2734031997ea360c2204cfb011b8f4af821a))
+
 ### [0.0.6](https://github.com/d-koppenhagen/retro-board/compare/v0.0.5...v0.0.6) (2021-01-18)
 
 
