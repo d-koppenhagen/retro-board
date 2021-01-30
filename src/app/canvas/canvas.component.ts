@@ -89,11 +89,14 @@ export class CanvasComponent implements OnInit, AfterViewInit {
             switch (value.type) {
               case 'free':
                 const freeShape = value.shape as Free;
-                this.drawFree({ points: freeShape.points, closed: false });
+                this.drawFreeShape({ points: freeShape.points, closed: false });
                 break;
               case 'free_closed':
                 const freeCloseShape = value.shape as Free;
-                this.drawFree({ points: freeCloseShape.points, closed: true });
+                this.drawFreeShape({
+                  points: freeCloseShape.points,
+                  closed: true,
+                });
                 break;
               case 'rectangle':
                 const rectangleShape = value.shape as Rectangle;
@@ -170,22 +173,42 @@ export class CanvasComponent implements OnInit, AfterViewInit {
   }
 
   /**
+   * start a path to draw freehand line / shape
+   */
+  drawFreeStart(point: DragPosition) {
+    this.context.moveTo(point.x, point.y);
+    this.context.beginPath();
+  }
+
+  /**
+   * close a free hand path
+   */
+  drawFreeClose() {
+    this.context.closePath();
+    this.context.stroke();
+  }
+
+  /**
+   * draw a freehand point and add it to the line / shape
+   *
+   * @param close close the path optionally
+   */
+  drawFreePoint(point: DragPosition) {
+    this.pointArray.push(point); // store in points array, to send the path to the db
+    this.context.lineTo(point.x, point.y);
+    this.context.stroke();
+  }
+
+  /**
    * draw a freehand line / shape
    *
    * @param close close the path optionally
    */
-  drawFree({ points, closed }: Free) {
-    this.context.moveTo(points[0].x, points[0].y);
-    this.context.beginPath();
-    points.forEach((p) => {
-      this.context.lineTo(p.x, p.y);
-    });
+  drawFreeShape({ points, closed }: Free) {
+    this.drawFreeStart(points[0]);
+    points.forEach((p) => this.drawFreePoint(p));
     if (closed) {
-      this.context.closePath();
-      this.context.stroke();
-    } else {
-      this.context.stroke();
-      this.context.closePath();
+      this.drawFreeClose();
     }
   }
 
@@ -193,12 +216,16 @@ export class CanvasComponent implements OnInit, AfterViewInit {
    * Mouse Drag event start function
    */
   dragStart(event: MouseEvent) {
+    this.setShapeStyle();
     if (!this.tool) {
       return;
     }
     this.dragging = true;
     this.pointArray = []; // clear points as we start a new path
     this.lastDragStart = this.getCanvasCoordinates(event);
+    if (['free', 'free_closed'].includes(this.tool)) {
+      this.drawFreeStart(this.lastDragStart);
+    }
   }
 
   /**
@@ -208,7 +235,9 @@ export class CanvasComponent implements OnInit, AfterViewInit {
     if (!this.tool || !this.dragging) {
       return;
     }
-    this.pointArray.push(this.getCanvasCoordinates(event));
+    if (['free', 'free_closed'].includes(this.tool)) {
+      this.drawFreePoint(this.getCanvasCoordinates(event));
+    }
   }
 
   /**
@@ -219,10 +248,6 @@ export class CanvasComponent implements OnInit, AfterViewInit {
       return;
     }
     this.lastDragStop = this.getCanvasCoordinates(event);
-
-    console.log('<< dragStop', event);
-
-    this.setShapeStyle();
 
     // filter duplicated points in sequence
     const points = uniqWith(
@@ -247,11 +272,10 @@ export class CanvasComponent implements OnInit, AfterViewInit {
     switch (this.tool) {
       case 'free':
         data = { ...baseData, shape: { points, closed: false } };
-        this.drawFree({ points, closed: false });
         break;
       case 'free_closed':
         data = { ...baseData, shape: { points, closed: true } };
-        this.drawFree({ points, closed: true });
+        this.drawFreeClose();
         break;
       case 'rectangle':
         data = { ...baseData, shape: startEnd };
